@@ -2,28 +2,33 @@
 
 #include <stdlib.h>
 
+#include "criteria.h"
+#include "hotkey.h"
 #include "keyboard.h"
 #include "update.h"
+#include "utils/doubly_linked_list.h"
+
+void libhotkey_layer_init(struct libhotkey_layer* layer) {
+	for (int i = 0; i < 256; i++) {
+		layer->hotkeys[i] = doubly_linked_list_new();
+	}
+	layer->next_layer = NULL;
+}
 
 void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 	int update_count = libhotkey_keyboard_update_count();
 	for (int i = 0; i < update_count; i++) {
 		struct libhotkey_update update = libhotkey_keyboard_pop_update();
 
-		/*
-		if (update.keycode == 32) {
-			libhotkey_keyboard_push_update((struct libhotkey_update){
-					.keycode = 33,
-					.transition = PRESS
-					});
-			libhotkey_keyboard_push_update((struct libhotkey_update){
-					.keycode = 33,
-					.transition = RELEASE
-					});
-		}
-		*/
+		struct doubly_linked_list_node* ptr = layer->hotkeys[i].before_begin->next;
 
-		libhotkey_keyboard_push_update(update);
+		while (ptr != layer->hotkeys[i].end) {
+			struct libhotkey_hotkey* hotkey = ptr->data;
+			if (libhotkey_criteria_satisfies(&(hotkey->criteria), update)) {
+				libhotkey_hotkey_apply(hotkey, update);
+			}
+			ptr = ptr->next;
+		}
 	}
 
 	if (layer->next_layer != NULL)
