@@ -21,9 +21,9 @@ void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 		// TODO: Only pop when a match is found
 		struct libhotkey_update update = libhotkey_keyboard_pop_update();
 
-		struct doubly_linked_list_node* ptr = layer->hotkeys[i].before_begin->next;
+		struct doubly_linked_list_node* ptr = layer->hotkeys[update.keycode].before_begin->next;
 
-		while (ptr != layer->hotkeys[i].end) {
+		while (ptr != layer->hotkeys[update.keycode].end) {
 			struct libhotkey_hotkey* hotkey = ptr->data;
 			if (hotkey->criteria == NULL || libhotkey_criteria_satisfies(hotkey->criteria, update)) {
 				libhotkey_hotkey_apply(hotkey, update);
