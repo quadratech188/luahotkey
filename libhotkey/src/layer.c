@@ -35,3 +35,7 @@ void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 	if (layer->next_layer != NULL)
 		libhotkey_layer_apply(layer->next_layer);
 }
+
+void libhotkey_layer_register(struct libhotkey_layer* layer, short keycode, struct libhotkey_hotkey* hotkey) {
+	doubly_linked_list_push_right(&layer->hotkeys[keycode], hotkey);
+}
