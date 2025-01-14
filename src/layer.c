@@ -3,13 +3,15 @@
 #include <stddef.h>
 
 #include <lauxlib.h>
-
 #include "../libhotkey/src/loop.h"
+
+#include "hotkey.h"
 
 static const char* metatable_name = "lhk.Layer";
 
 int layer_new(lua_State* L);
 int layer_set_next_layer(lua_State* L);
+int layer_register(lua_State* L);
 
 static const luaL_Reg functions[] = {
 	{"new", layer_new},
@@ -18,6 +20,7 @@ static const luaL_Reg functions[] = {
 
 static const luaL_Reg methods[] = {
 	{"set_next_layer", layer_set_next_layer},
+	{"register", layer_register},
 	{NULL, NULL}
 };
 
@@ -53,5 +56,10 @@ int layer_set_next_layer(lua_State* L) {
 
 	layer_get(L, 1)->next_layer = layer_get(L, 2);
 
+	return 0;
+}
+
+int layer_register(lua_State* L) {
+	libhotkey_layer_register(layer_get(L, 1), luaL_checkinteger(L, 2), hotkey_get(L, 3));
 	return 0;
 }

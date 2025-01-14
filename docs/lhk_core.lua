@@ -33,7 +33,12 @@ end
 
 ---Configure `next_layer` to be called after `self`.
 ---@param next_layer lhk.Layer? The layer to be linked to `self`.
-function Layer.set_next_layer(next_layer)
+function Layer:set_next_layer(next_layer)
+end
+
+---Register a hotkey to a layer.
+---@param hotkey lhk.Hotkey
+function Layer:register(hotkey)
 end
 
 ---@class lhk.Criteria
