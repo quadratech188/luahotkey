@@ -3,9 +3,9 @@
 #include "key.h"
 
 enum libhotkey_transition {
-	PRESS,
-	RELEASE,
-	AUTOREPEAT
+	LIBHOTKEY_TRANSITION_PRESS,
+	LIBHOTKEY_TRANSITION_RELEASE,
+	LIBHOTKEY_TRANSITION_AUTOREPEAT
 };
 
 struct libhotkey_update {

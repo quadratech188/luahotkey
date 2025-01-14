@@ -42,3 +42,7 @@ void libhotkey_keyboard_send_updates() {
 	}
 	libhotkey_io_send_update();
 }
+
+enum libhotkey_state libhotkey_keyboard_state(short keycode) {
+	return state[keycode];
+}

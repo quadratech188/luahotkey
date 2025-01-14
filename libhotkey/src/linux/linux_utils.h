@@ -3,21 +3,21 @@
 enum libhotkey_transition event_value_to_transition(unsigned int event_value) {
 	switch(event_value) {
 		case 0:
-			return RELEASE;
+			return LIBHOTKEY_TRANSITION_RELEASE;
 		case 1:
-			return PRESS;
+			return LIBHOTKEY_TRANSITION_PRESS;
 		case 2:
-			return AUTOREPEAT;
+			return LIBHOTKEY_TRANSITION_AUTOREPEAT;
 	}
 }
 
 unsigned int transition_to_event_value(enum libhotkey_transition transition) {
 	switch(transition) {
-		case PRESS:
+		case LIBHOTKEY_TRANSITION_PRESS:
 			return 1;
-		case RELEASE:
+		case LIBHOTKEY_TRANSITION_RELEASE:
 			return 0;
-		case AUTOREPEAT:
+		case LIBHOTKEY_TRANSITION_AUTOREPEAT:
 			return 2;
 	}
 }

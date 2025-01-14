@@ -18,13 +18,14 @@ void libhotkey_layer_init(struct libhotkey_layer* layer) {
 void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 	int update_count = libhotkey_keyboard_update_count();
 	for (int i = 0; i < update_count; i++) {
+		// TODO: Only pop when a match is found
 		struct libhotkey_update update = libhotkey_keyboard_pop_update();
 
 		struct doubly_linked_list_node* ptr = layer->hotkeys[i].before_begin->next;
 
 		while (ptr != layer->hotkeys[i].end) {
 			struct libhotkey_hotkey* hotkey = ptr->data;
-			if (libhotkey_criteria_satisfies(&(hotkey->criteria), update)) {
+			if (hotkey->criteria == NULL || libhotkey_criteria_satisfies(hotkey->criteria, update)) {
 				libhotkey_hotkey_apply(hotkey, update);
 			}
 			ptr = ptr->next;

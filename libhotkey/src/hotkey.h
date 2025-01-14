@@ -10,10 +10,10 @@ enum libhotkey_hotkey_type {
 
 struct libhotkey_hotkey {
 	enum libhotkey_hotkey_type type;
-	struct libhotkey_criteria criteria;
-	struct libhotkey_update* keystrokes;
-	int keystrokes_length;
+	struct libhotkey_criteria* criteria;
 	void* extra_data;
+	int updates_length;
+	struct libhotkey_update updates[];
 };
 
 void libhotkey_hotkey_apply(struct libhotkey_hotkey* hotkey, struct libhotkey_update);

@@ -14,9 +14,9 @@ enum libhotkey_criteria_type {
 struct libhotkey_criteria {
 	enum libhotkey_criteria_type type;
 	enum libhotkey_transition transition;
-	struct libhotkey_keystate* keystates;
-	int keystates_length;
 	void* extra_data;
+	int keystates_length;
+	struct libhotkey_keystate keystates[];
 };
 
 bool libhotkey_criteria_satisfies(struct libhotkey_criteria* criteria, struct libhotkey_update update);

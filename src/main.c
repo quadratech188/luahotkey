@@ -7,7 +7,11 @@
 #include "../libhotkey/src/loop.h"
 #include "../libhotkey/src/io.h"
 
+#include "criteria.h"
+#include "hotkey.h"
+#include "keystate.h"
 #include "layer.h"
+#include "update.h"
 
 lua_State* lhk_L;
 
@@ -28,7 +32,11 @@ int luaopen_lhk_core(lua_State* L) {
 	lua_newtable(L);
 	luaL_setfuncs(L, functions, 0);
 
+	criteria_open(L);
+	hotkey_open(L);
+	keystate_open(L);
 	layer_open(L);
+	update_open(L);
 
 	return 1;
 }

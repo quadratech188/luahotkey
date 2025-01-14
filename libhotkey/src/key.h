@@ -1,8 +1,8 @@
 #pragma once
 
 enum libhotkey_state {
-	UP,
-	DOWN
+	LIBHOTKEY_STATE_UP,
+	LIBHOTKEY_STATE_DOWN
 };
 
 struct libhotkey_keystate {

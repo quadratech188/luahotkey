@@ -2,11 +2,11 @@
 
 enum libhotkey_state updated_state(enum libhotkey_state initial_state, enum libhotkey_transition transition) {
 	switch(transition) {
-		case PRESS:
-			return DOWN;
-		case RELEASE:
-			return UP;
-		case AUTOREPEAT:
-			return DOWN;
+		case LIBHOTKEY_TRANSITION_PRESS:
+			return LIBHOTKEY_STATE_DOWN;
+		case LIBHOTKEY_TRANSITION_RELEASE:
+			return LIBHOTKEY_STATE_UP;
+		case LIBHOTKEY_TRANSITION_AUTOREPEAT:
+			return LIBHOTKEY_STATE_DOWN;
 	}
 }

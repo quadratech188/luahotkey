@@ -38,7 +38,7 @@ struct libhotkey_layer* layer_get(lua_State* L, int index) {
 }
 
 int layer_new(lua_State* L) {
-	lua_newuserdata(L, sizeof(struct libhotkey_layer));
+	libhotkey_layer_init(lua_newuserdata(L, sizeof(struct libhotkey_layer)));
 
 	luaL_setmetatable(L, metatable_name);
 
