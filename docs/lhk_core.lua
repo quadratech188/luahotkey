@@ -37,8 +37,9 @@ function Layer:set_next_layer(next_layer)
 end
 
 ---Register a hotkey to a layer.
+---@param keycode integer
 ---@param hotkey lhk.Hotkey
-function Layer:register(hotkey)
+function Layer:register(keycode, hotkey)
 end
 
 ---@class lhk.Criteria
