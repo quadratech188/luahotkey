@@ -48,7 +48,7 @@ int hotkey_new(lua_State* L) {
 	struct libhotkey_hotkey* hotkey;
 
 	if (lua_istable(L, -1)) {
-		int updates_length = lua_rawlen(L, -1);
+		int updates_length = luaL_len(L, -1);
 
 		hotkey = lua_newuserdata(L, sizeof(struct libhotkey_hotkey)
 				+ updates_length * sizeof(struct libhotkey_update));

@@ -49,7 +49,7 @@ int criteria_new(lua_State* L) {
 	struct libhotkey_criteria* criteria;
 
 	if (lua_istable(L, -1)) {
-		int keystates_length = lua_rawlen(L, -1);
+		int keystates_length = luaL_len(L, -1);
 
 		criteria = lua_newuserdata(L, sizeof(struct libhotkey_criteria)
 				+ keystates_length * sizeof(struct libhotkey_keystate));
