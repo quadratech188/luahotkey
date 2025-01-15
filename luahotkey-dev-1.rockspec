@@ -24,4 +24,9 @@ build = {
         INST_LUADIR="$(LUADIR)",
         INST_CONFDIR="$(CONFDIR)",
 	},
+	install = {
+		lua = {
+			['docs.lhk_core'] = 'docs/lhk_core.lua'
+		}
+	}
 }
