@@ -5,7 +5,9 @@
 
 void libhotkey_keyboard_init();
 
+struct libhotkey_update libhotkey_keyboard_get_update();
 struct libhotkey_update libhotkey_keyboard_pop_update();
+void libhotkey_keyboard_poppush_update();
 int libhotkey_keyboard_update_count();
 
 void libhotkey_keyboard_push_update(struct libhotkey_update update);

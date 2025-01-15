@@ -69,3 +69,12 @@ void doubly_linked_list_free(struct doubly_linked_list* list) {
 	free(list->before_begin);
 	free(list->end);
 }
+
+void doubly_linked_list_pop_left_push_right(struct doubly_linked_list* list) {
+	struct doubly_linked_list_node* left = list->before_begin->next;
+
+	link(list->before_begin, left->next);
+	
+	link(list->end->prev, left);
+	link(left, list->end);
+}

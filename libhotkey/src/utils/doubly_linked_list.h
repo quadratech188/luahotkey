@@ -22,3 +22,4 @@ void* doubly_linked_list_right(struct doubly_linked_list* list);
 void doubly_linked_list_pop_right(struct doubly_linked_list* list);
 void doubly_linked_list_push_right(struct doubly_linked_list* list, void* data);
 void doubly_linked_list_free(struct doubly_linked_list* list);
+void doubly_linked_list_pop_left_push_right(struct doubly_linked_list* list);

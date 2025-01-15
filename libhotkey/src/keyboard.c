@@ -14,6 +14,10 @@ void libhotkey_keyboard_init() {
 	updates = queue_new();
 }
 
+struct libhotkey_update libhotkey_keyboard_get_update() {
+	return *(struct libhotkey_update*)queue_front(&updates);
+}
+
 struct libhotkey_update libhotkey_keyboard_pop_update() {
 	struct libhotkey_update* result_ptr = queue_front(&updates);
 	queue_pop(&updates);
@@ -21,6 +25,10 @@ struct libhotkey_update libhotkey_keyboard_pop_update() {
 	struct libhotkey_update result = *result_ptr;
 	free(result_ptr);
 	return result;
+}
+
+void libhotkey_keyboard_poppush_update() {
+	queue_poppush(&updates);
 }
 
 int libhotkey_keyboard_update_count() {

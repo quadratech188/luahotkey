@@ -18,6 +18,10 @@ void queue_pop(queue* queue) {
 	doubly_linked_list_pop_left(queue);
 }
 
+void queue_poppush(queue* queue) {
+	doubly_linked_list_pop_left_push_right(queue);
+}
+
 void queue_free(queue* queue) {
 	doubly_linked_list_free(queue);
 }
