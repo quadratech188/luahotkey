@@ -26,7 +26,9 @@ build = {
 	},
 	install = {
 		lua = {
-			['docs.lhk_core'] = 'docs/lhk_core.lua'
+			['docs.lhk_core'] = 'docs/lhk_core.lua',
+
+			['keycodes.global'] = 'lua/keycodes/global.lua',
 		}
 	}
 }
