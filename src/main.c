@@ -7,6 +7,7 @@
 #include "../libhotkey/src/loop.h"
 #include "../libhotkey/src/io.h"
 
+#include "action.h"
 #include "criteria.h"
 #include "hotkey.h"
 #include "keystate.h"
@@ -32,6 +33,7 @@ int luaopen_lhk_core(lua_State* L) {
 	lua_newtable(L);
 	luaL_setfuncs(L, functions, 0);
 
+	action_open(L);
 	criteria_open(L);
 	hotkey_open(L);
 	keystate_open(L);

@@ -16,6 +16,8 @@ void libhotkey_layer_init(struct libhotkey_layer* layer) {
 }
 
 void libhotkey_layer_apply(struct libhotkey_layer* layer) {
+	// TODO: operate on linked list directly
+
 	int update_count = libhotkey_keyboard_update_count();
 	for (int i = 0; i < update_count; i++) {
 

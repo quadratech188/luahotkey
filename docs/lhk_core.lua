@@ -6,6 +6,8 @@ local G = {}
 
 ---@alias lhk.Transition 'Press' | 'Release' | 'Autorepeat'
 
+---@alias lhk.Action_type 'Press' | 'Release' | 'Autorepeat' | 'Require_down' | 'Require_up' | 'Custom'
+
 ---Start the input loop.
 ---@param input string A path to an input file, usually `/dev/input/event#`.
 ---@param output string The name of the input device to be created.
@@ -64,12 +66,23 @@ G.hotkey = {}
 
 ---@class lhk.Hotkey_table
 ---@field criteria lhk.Criteria? The hotkey is activated when the criteria is statisfied.
----@field updates lhk.Update[]? The updates to send when the hotkey is activated.
+---@field actions lhk.Action[]? The updates to send when the hotkey is activated.
 
 ---Create a new Hotkey.
 ---@param args lhk.Hotkey_table
 ---@return lhk.Hotkey
 function G.hotkey.new(args)
+end
+
+---@class lhk.Action
+local Action = {}
+
+G.action = {}
+
+---Create a new Hotkey
+---@param data integer | function function if `type` is 'Custom', integer otherwise
+---@param type lhk.Action_type
+function G.action.new(data, type)
 end
 
 ---@class lhk.Keystate

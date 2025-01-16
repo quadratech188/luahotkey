@@ -5,6 +5,7 @@
 
 #include "../libhotkey/src/hotkey.h"
 
+#include "action.h"
 #include "criteria.h"
 #include "update.h"
 
@@ -21,11 +22,7 @@ static const luaL_Reg methods[] = {
 	{NULL, NULL}
 };
 
-static void handler(struct libhotkey_hotkey*, struct libhotkey_update);
-
 void hotkey_open(lua_State* L) {
-	libhotkey_hotkey_set_handler(handler);
-
 	lua_newtable(L);
 	luaL_setfuncs(L, functions, 0);
 	lua_setfield(L, -2, "hotkey");
@@ -43,32 +40,22 @@ struct libhotkey_hotkey* hotkey_get(lua_State* L, int index) {
 
 int hotkey_new(lua_State* L) {
 	luaL_checktype(L, 1, LUA_TTABLE);
-	lua_getfield(L, 1, "updates");
+	lua_getfield(L, 1, "actions");
 
-	struct libhotkey_hotkey* hotkey;
+	int actions_length = luaL_len(L, -1);
 
-	if (lua_istable(L, -1)) {
-		int updates_length = luaL_len(L, -1);
+	struct libhotkey_hotkey* hotkey = lua_newuserdata(L, sizeof(struct libhotkey_hotkey)
+			+ actions_length * sizeof(struct libhotkey_action));
 
-		hotkey = lua_newuserdata(L, sizeof(struct libhotkey_hotkey)
-				+ updates_length * sizeof(struct libhotkey_update));
+	hotkey->actions_length = actions_length;
 
-		hotkey->updates_length = updates_length;
+	lua_getfield(L, 1, "actions"); // lua_newuserdata means that the array is no longer on
+								   // top of the stack, get it again
 
-		lua_getfield(L, 1, "updates"); // lua_newuserdata means that the array is no longer on
-										  // top of the stack, get it again
-
-		for (int i = 0; i < updates_length; i++) {
-			lua_geti(L, -1, i + 1);
-			hotkey->updates[i] = *update_get(L, -1);
-			lua_pop(L, 1);
-		}
-		hotkey->type = LIBHOTKEY_HOTKEY_KEYSTROKES;
-	}
-	else {
-		hotkey = lua_newuserdata(L, sizeof(struct libhotkey_hotkey));
-		hotkey->updates_length = 0;
-		hotkey->type = 0;
+	for (int i = 0; i < actions_length; i++) {
+		lua_geti(L, -1, i + 1);
+		hotkey->actions[i] = *action_get(L, -1);
+		lua_pop(L, 1);
 	}
 
 	lua_pop(L, 1);
@@ -84,10 +71,4 @@ int hotkey_new(lua_State* L) {
 	luaL_setmetatable(L, metatable_name);
 
 	return 1;
-
-	// TODO: Add support for lua handlers
-}
-
-static void handler(struct libhotkey_hotkey* hotkey, struct libhotkey_update update) {
-	// TODO
 }

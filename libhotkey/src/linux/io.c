@@ -20,9 +20,17 @@ int libhotkey_io_init(const char* input_name, const char* output_name) {
 	// https://www.freedesktop.org/software/libevdev/doc/latest/
 	int input_fd = open(input_name, O_RDWR);
 
+	if (input_fd < 0) {
+		libhotkey_io_cleanup();
+		return LIBHOTKEY_OPEN_INPUT_FAIL;
+	}
+
 	int result = libevdev_new_from_fd(input_fd, &input_dev);
 
-	if (result < 0) return LIBHOTKEY_OPEN_INPUT_FAIL;
+	if (result < 0) {
+		libhotkey_io_cleanup();
+		return LIBHOTKEY_OPEN_INPUT_FAIL;
+	}
 
 	/* 
 	result = libevdev_grab(input_dev, LIBEVDEV_GRAB);
