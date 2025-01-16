@@ -32,14 +32,12 @@ int libhotkey_io_init(const char* input_name, const char* output_name) {
 		return LIBHOTKEY_OPEN_INPUT_FAIL;
 	}
 
-	/* 
 	result = libevdev_grab(input_dev, LIBEVDEV_GRAB);
 
 	if (result < 0) {
 		libhotkey_io_cleanup();
 		return LIBHOTKEY_GRAB_INPUT_FAIL;
 	}
-	*/
 
 	// output
 	output_dev = libevdev_new();

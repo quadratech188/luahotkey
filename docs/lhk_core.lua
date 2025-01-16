@@ -80,7 +80,7 @@ local Action = {}
 G.action = {}
 
 ---Create a new Hotkey
----@param data integer | function function if `type` is 'Custom', integer otherwise
+---@param data integer | fun(update: lhk.Update): nil function if `type` is 'Custom', integer otherwise
 ---@param type lhk.Action_type
 function G.action.new(data, type)
 end

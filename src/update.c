@@ -37,6 +37,11 @@ struct libhotkey_update* update_get(lua_State* L, int index) {
 	return luaL_checkudata(L, index, metatable_name);
 }
 
+void update_push(lua_State* L, struct libhotkey_update update) {
+	*(struct libhotkey_update*)lua_newuserdata(L, sizeof(struct libhotkey_update)) = update;
+	luaL_setmetatable(L, metatable_name);
+}
+
 int update_new(lua_State* L) {
 	struct libhotkey_update* update = lua_newuserdata(L, sizeof(struct libhotkey_update));
 
