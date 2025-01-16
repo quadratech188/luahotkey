@@ -26,6 +26,13 @@ void libhotkey_action_apply(struct libhotkey_action* action, struct libhotkey_up
 					});
 			break;
 
+		case LIBHOTKEY_ACTION_MIRROR:
+			libhotkey_keyboard_push_update((struct libhotkey_update) {
+					action->keycode,
+					update.transition
+					});
+			break;
+
 		case LIBHOTKEY_ACTION_REQUIRE_DOWN:
 			if (libhotkey_keyboard_state(action->keycode) != LIBHOTKEY_STATE_DOWN)
 				libhotkey_keyboard_push_update((struct libhotkey_update) {

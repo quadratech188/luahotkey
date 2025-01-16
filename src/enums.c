@@ -35,6 +35,8 @@ enum libhotkey_action_type action_type_get(lua_State* L, int index) {
 		return LIBHOTKEY_ACTION_AUTOREPEAT;
 	else if (strcmp("Release", action_type) == 0)
 		return LIBHOTKEY_ACTION_RELEASE;
+	else if (strcmp("Mirror", action_type) == 0)
+		return LIBHOTKEY_ACTION_MIRROR;
 	else if (strcmp("Require_up", action_type) == 0)
 		return LIBHOTKEY_ACTION_REQUIRE_UP;
 	else if (strcmp("Require_down", action_type) == 0)

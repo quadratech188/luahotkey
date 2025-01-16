@@ -6,7 +6,7 @@ local G = {}
 
 ---@alias lhk.Transition 'Press' | 'Release' | 'Autorepeat'
 
----@alias lhk.Action_type 'Press' | 'Release' | 'Autorepeat' | 'Require_down' | 'Require_up' | 'Custom'
+---@alias lhk.Action_type 'Press' | 'Release' | 'Autorepeat' | 'Mirror' | 'Require_down' | 'Require_up' | 'Custom'
 
 ---Start the input loop.
 ---@param input string A path to an input file, usually `/dev/input/event#`.
