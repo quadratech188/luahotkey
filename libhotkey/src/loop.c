@@ -3,9 +3,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include "layer.h"
-#include "keyboard.h"
 #include "io.h"
+#include "keyboard.h"
+#include "layer.h"
+#include "update_list.h"
 
 
 static struct libhotkey_layer* root;
@@ -14,18 +15,16 @@ static bool stop = false;
 int libhotkey_loop_start() {
 	if (root == NULL) return LIBHOTKEY_NO_ROOT;
 
-	libhotkey_keyboard_init();
+	libhotkey_update_list_init();
 
 	while (libhotkey_io_await_update()) {
-		struct libhotkey_update transition = libhotkey_io_get_update();
-
-		libhotkey_keyboard_push_update(transition);
-
+		libhotkey_update_list_reset();
+		libhotkey_update_list_push(libhotkey_io_get_update());
 		libhotkey_layer_apply(root);
 
 		if (stop) break;
 
-		libhotkey_keyboard_send_updates();
+		libhotkey_update_list_send();
 	}
 
 	return 0;

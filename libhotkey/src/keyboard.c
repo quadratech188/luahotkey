@@ -36,7 +36,7 @@ int libhotkey_keyboard_update_count() {
 }
 
 void libhotkey_keyboard_push_update(const struct libhotkey_update update) {
-	state[update.keycode] = updated_state(state[update.keycode], update.transition);
+	state[update.keycode] = libhotkey_state_update(state[update.keycode], update.transition);
 
 	struct libhotkey_update* update_ptr = malloc(sizeof(struct libhotkey_update));
 	*update_ptr = update;

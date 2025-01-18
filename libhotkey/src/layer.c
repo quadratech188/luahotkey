@@ -4,8 +4,8 @@
 
 #include "criteria.h"
 #include "hotkey.h"
-#include "keyboard.h"
 #include "update.h"
+#include "update_list.h"
 #include "utils/doubly_linked_list.h"
 
 void libhotkey_layer_init(struct libhotkey_layer* layer) {
@@ -16,12 +16,10 @@ void libhotkey_layer_init(struct libhotkey_layer* layer) {
 }
 
 void libhotkey_layer_apply(struct libhotkey_layer* layer) {
-	// TODO: operate on linked list directly
+	libhotkey_update_list_reset();
 
-	int update_count = libhotkey_keyboard_update_count();
-	for (int i = 0; i < update_count; i++) {
-
-		struct libhotkey_update update = libhotkey_keyboard_get_update();
+	while (libhotkey_update_list_advance()) {
+		struct libhotkey_update update = libhotkey_update_list_get();
 
 		bool matched = false;
 
@@ -31,16 +29,13 @@ void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 			struct libhotkey_hotkey* hotkey = ptr->data;
 			if (hotkey->criteria == NULL || libhotkey_criteria_satisfies(hotkey->criteria, update)) {
 				if (!matched) {
-					libhotkey_keyboard_pop_update();
+					// TODO: Optimize by using libhotkey_update_list_replace()
+					libhotkey_update_list_pop();
 					matched = true;
 				}
 				libhotkey_hotkey_apply(hotkey, update);
 			}
 			ptr = ptr->next;
-		}
-
-		if (!matched) { // send update to the back of the queue
-			libhotkey_keyboard_poppush_update();
 		}
 	}
 

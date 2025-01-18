@@ -13,4 +13,4 @@ struct libhotkey_update {
 	enum libhotkey_transition transition;
 };
 
-enum libhotkey_state updated_state(enum libhotkey_state initial_state, enum libhotkey_transition transition);
+enum libhotkey_state libhotkey_state_update(enum libhotkey_state initial_state, enum libhotkey_transition transition);
