@@ -52,6 +52,7 @@ G.criteria = {}
 ---@class lhk.Criteria_table
 ---@field transition lhk.Transition? The update needs to match a given transition.
 ---@field keystates lhk.Keystate[]? The keyboard state needs to match these keystates.
+---@field handler fun(update: lhk.Update): boolean Custom lua handler
 
 ---Create a new Criteria.
 ---@param args lhk.Criteria_table

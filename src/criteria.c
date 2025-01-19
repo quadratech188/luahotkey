@@ -6,12 +6,15 @@
 #include <lua.h>
 #include "../libhotkey/src/criteria.h"
 
-#include "keystate.h"
 #include "enums.h"
+#include "keystate.h"
+#include "main.h"
+#include "update.h"
 
 static const char* metatable_name = "lhk.Criteria";
 
 int criteria_new(lua_State* L);
+int criteria_gc(lua_State* L);
 
 static const luaL_Reg functions[] = {
 	{"new", criteria_new},
@@ -19,6 +22,7 @@ static const luaL_Reg functions[] = {
 };
 
 static const luaL_Reg methods[] = {
+	{"__gc", criteria_gc},
 	{NULL, NULL}
 };
 
@@ -82,14 +86,43 @@ int criteria_new(lua_State* L) {
 
 	lua_pop(L, 1);
 
+	lua_getfield(L, 1, "handler");
+	if (!lua_isnil(L, -1)) {
+		criteria->type |= LIBHOTKEY_CRITERIA_HANDLER;
+		luaL_checktype(L, -1, LUA_TFUNCTION);
+		criteria->extra_data = (void*)(intptr_t)luaL_ref(L, LUA_REGISTRYINDEX);
+		// luaL_ref pops for us
+	}
+	else {
+		lua_pop(L, 1);
+	}
+
 	luaL_setmetatable(L, metatable_name);
 
 	return 1;
+}
 
-	// TODO: Add support for lua handlers
+int criteria_gc(lua_State* L) {
+	struct libhotkey_criteria* criteria = criteria_get(L, 1);
+
+	if (criteria->type & LIBHOTKEY_CRITERIA_HANDLER)
+		luaL_unref(L, LUA_REGISTRYINDEX, (intptr_t)criteria->extra_data);
+
+	return 0;
 }
 
 static bool handler(struct libhotkey_criteria* criteria, struct libhotkey_update update) {
-	// TODO
-	return true;
+	lua_geti(lhk_L, LUA_REGISTRYINDEX, (intptr_t)criteria->extra_data);
+	update_push(lhk_L, update);
+
+	int err = lua_pcall(lhk_L, 1, 1, 0);
+
+	if (err != 0) {
+		fprintf(stderr, lua_tostring(lhk_L, err));
+	}
+
+	bool result = lua_toboolean(lhk_L, -1);
+	lua_pop(lhk_L, 1);
+
+	return result;
 }
