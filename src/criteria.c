@@ -64,14 +64,14 @@ int criteria_new(lua_State* L) {
 			lua_pop(L, 1);
 		}
 		criteria->type = LIBHOTKEY_CRITERIA_KEYSTATE;
+
+		lua_pop(L, 1);
 	}
 	else {
 		criteria = lua_newuserdata(L, sizeof(struct libhotkey_criteria));
 		criteria->keystates_length = 0;
 		criteria->type = 0;
 	}
-
-	lua_pop(L, 1);
 
 	lua_getfield(L, 1, "transition");
 	if (!lua_isnil(L, -1)) {
