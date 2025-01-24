@@ -16,6 +16,8 @@ void libhotkey_layer_init(struct libhotkey_layer* layer) {
 }
 
 void libhotkey_layer_apply(struct libhotkey_layer* layer) {
+	if (layer == NULL) return;
+
 	libhotkey_update_list_reset();
 
 	while (libhotkey_update_list_advance()) {
@@ -39,8 +41,7 @@ void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 		}
 	}
 
-	if (layer->next_layer != NULL)
-		libhotkey_layer_apply(layer->next_layer);
+	libhotkey_layer_apply(layer->next_layer);
 }
 
 void libhotkey_layer_register(struct libhotkey_layer* layer, short keycode, struct libhotkey_hotkey* hotkey) {

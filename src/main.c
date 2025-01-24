@@ -56,13 +56,7 @@ int lhk_start(lua_State* L) {
 			return luaL_error(L, "Failed to create output %s: %s", luaL_checkstring(L, 2), strerror(errno));
 	}
 
-	error = libhotkey_loop_start();
-
-	switch(error) {
-		case 0: break;
-		case LIBHOTKEY_NO_ROOT:
-			return luaL_error(L, "Root was not set");
-	}
+	libhotkey_loop_start();
 
 	return 0;
 }

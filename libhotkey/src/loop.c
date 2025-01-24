@@ -12,9 +12,7 @@
 static struct libhotkey_layer* root;
 static bool stop = false;
 
-int libhotkey_loop_start() {
-	if (root == NULL) return LIBHOTKEY_NO_ROOT;
-
+void libhotkey_loop_start() {
 	libhotkey_update_list_init();
 
 	while (libhotkey_io_await_update()) {
@@ -26,8 +24,6 @@ int libhotkey_loop_start() {
 
 		libhotkey_update_list_send();
 	}
-
-	return 0;
 }
 
 void libhotkey_loop_stop() {
