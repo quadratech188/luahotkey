@@ -3,7 +3,6 @@
 #include "keyboard.h"
 #include "libhotkey.h"
 #include "update.h"
-#include "update_list.h"
 
 static void (*action_handler) (struct libhotkey_action* action, struct libhotkey_update update);
 

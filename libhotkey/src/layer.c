@@ -4,9 +4,9 @@
 
 #include "criteria.h"
 #include "hotkey.h"
+#include "libhotkey.h"
 #include "libhotkey_internal.h"
 #include "update.h"
-#include "update_list.h"
 
 struct libhotkey_layer {
 	struct list_item* hotkeys[256];
@@ -38,38 +38,25 @@ void libhotkey_layer_cleanup(struct libhotkey_layer* layer) {
 }
 
 void libhotkey_send_from_layer(struct libhotkey_layer* layer, struct libhotkey_update update) {
-	libhotkey_update_list_push(update);
-}
+	struct list_item* ptr = layer->hotkeys[update.keycode];
 
-void libhotkey_layer_apply(struct libhotkey_layer* layer) {
-	if (layer == NULL) return;
+	bool matched = false;
+	libhotkey_set_active_layer(layer->next_layer);
 
-	libhotkey_set_active_layer(layer);
-
-	libhotkey_update_list_reset();
-
-	while (libhotkey_update_list_advance()) {
-		struct libhotkey_update update = libhotkey_update_list_get();
-
-		bool matched = false;
-
-		struct list_item* ptr = layer->hotkeys[update.keycode];
-
-		while (ptr != NULL) {
-			struct libhotkey_hotkey* hotkey = ptr->hotkey;
-			if (hotkey->criteria == NULL || libhotkey_criteria_satisfies(hotkey->criteria, update)) {
-				if (!matched) {
-					// TODO: Optimize by using libhotkey_update_list_replace()
-					libhotkey_update_list_pop();
-					matched = true;
-				}
-				libhotkey_hotkey_apply(hotkey, update);
+	while (ptr != NULL) {
+		struct libhotkey_hotkey* hotkey = ptr->hotkey;
+		if (hotkey->criteria == NULL || libhotkey_criteria_satisfies(hotkey->criteria, update)) {
+			if (!matched) {
+				matched = true;
 			}
-			ptr = ptr->next;
+			libhotkey_hotkey_apply(hotkey, update);
 		}
+		ptr = ptr->next;
 	}
 
-	libhotkey_layer_apply(layer->next_layer);
+	if (!matched) {
+		libhotkey_send(update);
+	}
 }
 
 void libhotkey_layer_register(struct libhotkey_layer* layer, short keycode, struct libhotkey_hotkey* hotkey) {
