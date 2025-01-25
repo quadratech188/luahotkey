@@ -46,10 +46,6 @@ $(BUILD_DIR)/src/linux/%.o: $(LINUX_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(LINUX_CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/src/utils/%.o: $(UTILS_DIR)/%.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
