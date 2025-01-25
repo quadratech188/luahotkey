@@ -6,16 +6,20 @@
 #include "hotkey.h"
 #include "update.h"
 #include "update_list.h"
-#include "utils/doubly_linked_list.h"
 
 struct libhotkey_layer {
-	struct doubly_linked_list hotkeys[256];
+	struct list_item* hotkeys[256];
 	struct libhotkey_layer* next_layer;
+};
+
+struct list_item {
+	struct libhotkey_hotkey* hotkey;
+	struct list_item* next;
 };
 
 void libhotkey_layer_init(struct libhotkey_layer* layer) {
 	for (int i = 0; i < 256; i++) {
-		layer->hotkeys[i] = doubly_linked_list_new();
+		layer->hotkeys[i] = NULL;
 	}
 	layer->next_layer = NULL;
 }
@@ -30,10 +34,10 @@ void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 
 		bool matched = false;
 
-		struct doubly_linked_list_node* ptr = layer->hotkeys[update.keycode].before_begin->next;
+		struct list_item* ptr = layer->hotkeys[update.keycode];
 
-		while (ptr != layer->hotkeys[update.keycode].end) {
-			struct libhotkey_hotkey* hotkey = ptr->data;
+		while (ptr != NULL) {
+			struct libhotkey_hotkey* hotkey = ptr->hotkey;
 			if (hotkey->criteria == NULL || libhotkey_criteria_satisfies(hotkey->criteria, update)) {
 				if (!matched) {
 					// TODO: Optimize by using libhotkey_update_list_replace()
@@ -50,7 +54,10 @@ void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 }
 
 void libhotkey_layer_register(struct libhotkey_layer* layer, short keycode, struct libhotkey_hotkey* hotkey) {
-	doubly_linked_list_push_right(&layer->hotkeys[keycode], hotkey);
+	struct list_item* prev = layer->hotkeys[keycode];
+	layer->hotkeys[keycode] = malloc(sizeof(struct list_item));
+	layer->hotkeys[keycode]->hotkey = hotkey;
+	layer->hotkeys[keycode]->next = prev;
 }
 
 void libhotkey_set_next_layer(struct libhotkey_layer* layer, struct libhotkey_layer* next) {
