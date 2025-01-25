@@ -8,6 +8,11 @@
 #include "update_list.h"
 #include "utils/doubly_linked_list.h"
 
+struct libhotkey_layer {
+	struct doubly_linked_list hotkeys[256];
+	struct libhotkey_layer* next_layer;
+};
+
 void libhotkey_layer_init(struct libhotkey_layer* layer) {
 	for (int i = 0; i < 256; i++) {
 		layer->hotkeys[i] = doubly_linked_list_new();
@@ -46,4 +51,12 @@ void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 
 void libhotkey_layer_register(struct libhotkey_layer* layer, short keycode, struct libhotkey_hotkey* hotkey) {
 	doubly_linked_list_push_right(&layer->hotkeys[keycode], hotkey);
+}
+
+void libhotkey_set_next_layer(struct libhotkey_layer* layer, struct libhotkey_layer* next) {
+	layer->next_layer = next;
+}
+
+size_t libhotkey_layer_size() {
+	return sizeof(struct libhotkey_layer);
 }

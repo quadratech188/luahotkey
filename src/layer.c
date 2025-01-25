@@ -41,7 +41,7 @@ struct libhotkey_layer* layer_get(lua_State* L, int index) {
 }
 
 int layer_new(lua_State* L) {
-	libhotkey_layer_init(lua_newuserdata(L, sizeof(struct libhotkey_layer)));
+	libhotkey_layer_init(lua_newuserdata(L, libhotkey_layer_size()));
 
 	luaL_setmetatable(L, metatable_name);
 
@@ -50,11 +50,11 @@ int layer_new(lua_State* L) {
 
 int layer_set_next_layer(lua_State* L) {
 	if (lua_isnil(L, 2)) {
-		layer_get(L, 1)->next_layer = NULL;
+		libhotkey_set_next_layer(layer_get(L, 1), NULL);
 		return 0;
 	}
 
-	layer_get(L, 1)->next_layer = layer_get(L, 2);
+	libhotkey_set_next_layer(layer_get(L, 1), layer_get(L, 2));
 
 	return 0;
 }
