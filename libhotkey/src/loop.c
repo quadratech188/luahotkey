@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 #include "io.h"
-#include "keyboard.h"
 #include "layer.h"
 #include "libhotkey.h"
 #include "libhotkey_internal.h"
