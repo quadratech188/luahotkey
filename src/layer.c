@@ -12,6 +12,7 @@ static const char* metatable_name = "lhk.Layer";
 int layer_new(lua_State* L);
 int layer_set_next_layer(lua_State* L);
 int layer_register(lua_State* L);
+int layer_gc(lua_State* L);
 
 static const luaL_Reg functions[] = {
 	{"new", layer_new},
@@ -21,6 +22,7 @@ static const luaL_Reg functions[] = {
 static const luaL_Reg methods[] = {
 	{"set_next_layer", layer_set_next_layer},
 	{"register", layer_register},
+	{"__gc", layer_gc},
 	{NULL, NULL}
 };
 
@@ -46,6 +48,11 @@ int layer_new(lua_State* L) {
 	luaL_setmetatable(L, metatable_name);
 
 	return 1;
+}
+
+int layer_gc(lua_State* L) {
+	libhotkey_layer_cleanup(layer_get(L, 1));
+	return 0;
 }
 
 int layer_set_next_layer(lua_State* L) {

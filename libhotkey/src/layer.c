@@ -24,6 +24,18 @@ void libhotkey_layer_init(struct libhotkey_layer* layer) {
 	layer->next_layer = NULL;
 }
 
+void libhotkey_layer_cleanup(struct libhotkey_layer* layer) {
+	for (int i = 0; i < 256; i++) {
+		struct list_item* ptr = layer->hotkeys[i];
+
+		while (ptr != NULL) {
+			struct list_item* next = ptr->next;
+			free(ptr);
+			ptr = next;
+		}
+	}
+}
+
 void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 	if (layer == NULL) return;
 
