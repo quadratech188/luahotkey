@@ -4,6 +4,7 @@
 
 #include "criteria.h"
 #include "hotkey.h"
+#include "libhotkey_internal.h"
 #include "update.h"
 #include "update_list.h"
 
@@ -36,8 +37,14 @@ void libhotkey_layer_cleanup(struct libhotkey_layer* layer) {
 	}
 }
 
+void libhotkey_send_from_layer(struct libhotkey_layer* layer, struct libhotkey_update update) {
+	libhotkey_update_list_push(update);
+}
+
 void libhotkey_layer_apply(struct libhotkey_layer* layer) {
 	if (layer == NULL) return;
+
+	libhotkey_set_active_layer(layer);
 
 	libhotkey_update_list_reset();
 
