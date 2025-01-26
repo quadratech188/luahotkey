@@ -68,6 +68,6 @@ int lhk_stop(lua_State* L) {
 }
 
 int lhk_set_root(lua_State* L) {
-	libhotkey_loop_set_root(layer_get(L, 1));
+	libhotkey_loop_set_root(libhotkey_ref_to_layer(layer_get(L, 1)));
 	return 0;
 }

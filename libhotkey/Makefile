@@ -8,6 +8,7 @@ SRC_DIR = src
 BUILD_DIR = build
 LINUX_DIR = $(SRC_DIR)/linux
 UTILS_DIR = $(SRC_DIR)/utils
+INCLUDE_DIR = include
 
 # Source files
 COMMON_SOURCES = $(wildcard $(SRC_DIR)/*.c) \
@@ -40,7 +41,7 @@ $(TARGET): $(COMMON_OBJECTS) $(PLATFORM_OBJECTS)
 
 $(BUILD_DIR)/src/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
 $(BUILD_DIR)/src/linux/%.o: $(LINUX_DIR)/%.c
 	@mkdir -p $(dir $@)

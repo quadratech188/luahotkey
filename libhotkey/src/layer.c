@@ -10,7 +10,8 @@
 
 struct libhotkey_layer {
 	struct list_item* hotkeys[256];
-	struct libhotkey_layer* next_layer;
+
+	struct libhotkey_node_ref next;
 };
 
 struct list_item {
@@ -22,7 +23,7 @@ void libhotkey_layer_init(struct libhotkey_layer* layer) {
 	for (int i = 0; i < 256; i++) {
 		layer->hotkeys[i] = NULL;
 	}
-	layer->next_layer = NULL;
+	layer->next.type = LIBHOTKEY_NODE_NULL;
 }
 
 void libhotkey_layer_cleanup(struct libhotkey_layer* layer) {
@@ -41,7 +42,6 @@ void libhotkey_send_from_layer(struct libhotkey_layer* layer, struct libhotkey_u
 	struct list_item* ptr = layer->hotkeys[update.keycode];
 
 	bool matched = false;
-	libhotkey_set_active_layer(layer->next_layer);
 
 	while (ptr != NULL) {
 		struct libhotkey_hotkey* hotkey = ptr->hotkey;
@@ -49,13 +49,13 @@ void libhotkey_send_from_layer(struct libhotkey_layer* layer, struct libhotkey_u
 			if (!matched) {
 				matched = true;
 			}
-			libhotkey_hotkey_apply(hotkey, update);
+			libhotkey_hotkey_apply(layer->next, hotkey, update);
 		}
 		ptr = ptr->next;
 	}
 
 	if (!matched) {
-		libhotkey_send(update);
+		libhotkey_send(layer->next, update);
 	}
 }
 
@@ -66,8 +66,8 @@ void libhotkey_layer_register(struct libhotkey_layer* layer, short keycode, stru
 	layer->hotkeys[keycode]->next = prev;
 }
 
-void libhotkey_set_next_layer(struct libhotkey_layer* layer, struct libhotkey_layer* next) {
-	layer->next_layer = next;
+void libhotkey_set_next_node(struct libhotkey_layer* layer, struct libhotkey_node_ref next) {
+	layer->next = next;
 }
 
 size_t libhotkey_layer_size() {
