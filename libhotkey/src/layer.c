@@ -1,12 +1,11 @@
-#include "layer.h"
+#include "libhotkey-layer.h"
 
+#include <stddef.h>
 #include <stdlib.h>
 
-#include "criteria.h"
-#include "hotkey.h"
+#include "criteria-internal.h"
+#include "hotkey-internal.h"
 #include "libhotkey.h"
-#include "libhotkey_internal.h"
-#include "update.h"
 
 struct libhotkey_layer {
 	struct list_item* hotkeys[256];
@@ -18,6 +17,17 @@ struct list_item {
 	struct libhotkey_hotkey* hotkey;
 	struct list_item* next;
 };
+
+struct libhotkey_node_ref libhotkey_layer_ref(struct libhotkey_layer* layer) {
+	return (struct libhotkey_node_ref) {
+		.type = LIBHOTKEY_NODE_LAYER,
+		.ref = layer
+	};
+}
+
+int libhotkey_layer_size() {
+	return sizeof(struct libhotkey_layer);
+}
 
 void libhotkey_layer_init(struct libhotkey_layer* layer) {
 	for (int i = 0; i < 256; i++) {
@@ -38,7 +48,7 @@ void libhotkey_layer_cleanup(struct libhotkey_layer* layer) {
 	}
 }
 
-void libhotkey_send_from_layer(struct libhotkey_layer* layer, struct libhotkey_update update) {
+void libhotkey_process(struct libhotkey_layer* layer, struct libhotkey_update update) {
 	struct list_item* ptr = layer->hotkeys[update.keycode];
 
 	bool matched = false;
@@ -49,7 +59,7 @@ void libhotkey_send_from_layer(struct libhotkey_layer* layer, struct libhotkey_u
 			if (!matched) {
 				matched = true;
 			}
-			libhotkey_hotkey_apply(layer->next, hotkey, update);
+			libhotkey_apply_hotkey(layer->next, hotkey, update);
 		}
 		ptr = ptr->next;
 	}
@@ -59,17 +69,13 @@ void libhotkey_send_from_layer(struct libhotkey_layer* layer, struct libhotkey_u
 	}
 }
 
-void libhotkey_layer_register(struct libhotkey_layer* layer, short keycode, struct libhotkey_hotkey* hotkey) {
+void libhotkey_register_hotkey(struct libhotkey_layer* layer, short keycode, struct libhotkey_hotkey* hotkey) {
 	struct list_item* prev = layer->hotkeys[keycode];
 	layer->hotkeys[keycode] = malloc(sizeof(struct list_item));
 	layer->hotkeys[keycode]->hotkey = hotkey;
 	layer->hotkeys[keycode]->next = prev;
 }
 
-void libhotkey_set_next_node(struct libhotkey_layer* layer, struct libhotkey_node_ref next) {
+void libhotkey_layer_set_next(struct libhotkey_layer* layer, struct libhotkey_node_ref next) {
 	layer->next = next;
-}
-
-size_t libhotkey_layer_size() {
-	return sizeof(struct libhotkey_layer);
 }

@@ -4,7 +4,7 @@
 
 #include <lauxlib.h>
 #include <lua.h>
-#include "../libhotkey/src/criteria.h"
+#include "libhotkey-criteria.h"
 
 #include "enums.h"
 #include "keystate.h"
@@ -29,7 +29,7 @@ static const luaL_Reg methods[] = {
 static bool handler(struct libhotkey_criteria*, struct libhotkey_update);
 
 void criteria_open(lua_State* L) {
-	libhotkey_criteria_set_handler(handler);
+	libhotkey_set_criteria_handler(handler);
 
 	lua_newtable(L);
 	luaL_setfuncs(L, functions, 0);

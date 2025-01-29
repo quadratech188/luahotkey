@@ -1,4 +1,4 @@
-#include "../update.h"
+#include "../../include/libhotkey.h"
 
 enum libhotkey_transition event_value_to_transition(unsigned int event_value) {
 	switch(event_value) {

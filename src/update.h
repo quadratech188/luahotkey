@@ -1,5 +1,5 @@
 #include <lua.h>
-#include "../libhotkey/src/update.h"
+#include "libhotkey.h"
 
 void update_open(lua_State* L);
 void update_push(lua_State* L, struct libhotkey_update update);

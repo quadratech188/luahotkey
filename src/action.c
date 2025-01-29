@@ -1,6 +1,6 @@
 #include <lua.h>
 #include <lauxlib.h>
-#include "../libhotkey/src/action.h"
+#include "libhotkey-action.h"
 
 #include "update.h"
 #include "enums.h"
@@ -25,7 +25,7 @@ static const luaL_Reg methods[] = {
 static void action_handler(struct libhotkey_action* action, struct libhotkey_update update);
 
 void action_open(lua_State* L) {
-	libhotkey_action_set_handler(action_handler);
+	libhotkey_set_action_handler(action_handler);
 
 	lua_newtable(L);
 	luaL_setfuncs(L, functions, 0);

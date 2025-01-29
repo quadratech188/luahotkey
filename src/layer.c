@@ -4,7 +4,7 @@
 
 #include <lauxlib.h>
 #include "../libhotkey/src/loop.h"
-#include "../libhotkey/src/libhotkey.h"
+#include "libhotkey-layer.h"
 
 #include "hotkey.h"
 
@@ -58,16 +58,16 @@ int layer_gc(lua_State* L) {
 
 int layer_set_next_layer(lua_State* L) {
 	if (lua_isnil(L, 2)) {
-		libhotkey_set_next_node(layer_get(L, 1), libhotkey_ref_null());
+		libhotkey_layer_set_next(layer_get(L, 1), libhotkey_null_ref());
 		return 0;
 	}
 
-	libhotkey_set_next_node(layer_get(L, 1), libhotkey_ref_to_layer(layer_get(L, 2)));
+	libhotkey_layer_set_next(layer_get(L, 1), libhotkey_layer_ref(layer_get(L, 2)));
 
 	return 0;
 }
 
 int layer_register(lua_State* L) {
-	libhotkey_layer_register(layer_get(L, 1), luaL_checkinteger(L, 2), hotkey_get(L, 3));
+	libhotkey_register_hotkey(layer_get(L, 1), luaL_checkinteger(L, 2), hotkey_get(L, 3));
 	return 0;
 }

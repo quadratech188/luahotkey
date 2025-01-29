@@ -1,12 +1,10 @@
-#include "hotkey.h"
+#include "hotkey-internal.h"
 
 #include <stdbool.h>
 
-#include "action.h"
-#include "keyboard.h"
-#include "update.h"
+#include "action-internal.h"
 
-void libhotkey_hotkey_apply(struct libhotkey_node_ref dest, struct libhotkey_hotkey* hotkey, struct libhotkey_update update) {
+void libhotkey_apply_hotkey(struct libhotkey_node_ref dest, struct libhotkey_hotkey* hotkey, struct libhotkey_update update) {
 	for (int i = 0; i < hotkey->actions_length; i++)
-		libhotkey_action_apply(dest, &hotkey->actions[i], update);
+		libhotkey_apply_action(dest, &hotkey->actions[i], update);
 }

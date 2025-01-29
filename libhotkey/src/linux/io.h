@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-#include "../update.h"
+#include "../../include/libhotkey.h"
 
 #define LIBHOTKEY_OPEN_INPUT_FAIL 1
 #define LIBHOTKEY_GRAB_INPUT_FAIL 2

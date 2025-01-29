@@ -6,8 +6,6 @@
 #include "io.h"
 #include "layer.h"
 #include "libhotkey.h"
-#include "libhotkey_internal.h"
-
 
 static struct libhotkey_node_ref root;
 static bool stop = false;

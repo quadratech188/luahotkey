@@ -1,6 +1,6 @@
 #pragma once
 
-#include "update.h"
+#include "libhotkey.h"
 
 enum libhotkey_action_type {
 	LIBHOTKEY_ACTION_PRESS,
@@ -23,7 +23,5 @@ struct libhotkey_action {
 	};
 };
 
-void libhotkey_action_set_handler(void (*handler) (struct libhotkey_action* action, struct libhotkey_update update));
-
-#include "libhotkey.h"
-void libhotkey_action_apply(struct libhotkey_node_ref dest, struct libhotkey_action* action, struct libhotkey_update update);
+typedef void (*libhotkey_action_handler) (struct libhotkey_action* action, struct libhotkey_update update);
+void libhotkey_set_action_handler(libhotkey_action_handler handler);

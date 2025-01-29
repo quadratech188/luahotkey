@@ -4,7 +4,6 @@
 #include <stddef.h>
 
 #include <lauxlib.h>
-#include "../libhotkey/src/update.h"
 
 #include "enums.h"
 

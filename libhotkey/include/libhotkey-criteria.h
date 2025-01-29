@@ -1,9 +1,8 @@
 #pragma once
 
-#include <stdbool.h>
+#include "libhotkey.h"
 
-#include "key.h"
-#include "update.h"
+#include <stdbool.h>
 
 enum libhotkey_criteria_type {
 	LIBHOTKEY_CRITERIA_TRANSITION = 1,
@@ -19,6 +18,5 @@ struct libhotkey_criteria {
 	struct libhotkey_keystate keystates[];
 };
 
-bool libhotkey_criteria_satisfies(struct libhotkey_criteria* criteria, struct libhotkey_update update);
-
-void libhotkey_criteria_set_handler(bool (*handler) (struct libhotkey_criteria*, struct libhotkey_update));
+typedef bool (*libhotkey_criteria_handler) (struct libhotkey_criteria* action, struct libhotkey_update update);
+void libhotkey_set_criteria_handler(libhotkey_criteria_handler handler);

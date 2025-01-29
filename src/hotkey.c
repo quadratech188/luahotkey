@@ -3,7 +3,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "../libhotkey/src/hotkey.h"
+#include "libhotkey-hotkey.h"
 
 #include "action.h"
 #include "criteria.h"

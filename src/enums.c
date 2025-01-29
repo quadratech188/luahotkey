@@ -2,9 +2,7 @@
 
 #include <lua.h>
 #include <lauxlib.h>
-#include "../libhotkey/src/action.h"
-#include "../libhotkey/src/key.h"
-#include "../libhotkey/src/update.h"
+#include "libhotkey-action.h"
 
 enum libhotkey_state state_get(lua_State* L, int index) {
 	const char* state = luaL_checkstring(L, index);
