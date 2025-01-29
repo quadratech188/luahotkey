@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 #include "io.h"
-#include "layer.h"
 #include "libhotkey.h"
 
 static struct libhotkey_node_ref root;

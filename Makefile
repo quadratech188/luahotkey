@@ -13,7 +13,7 @@ libhotkey.so:
 build:
 	mkdir -p build
 
-lhk_core.so: build/main.o build/layer.o build/criteria.o build/hotkey.o build/enums.o build/keystate.o build/update.o build/action.o
+lhk_core.so: build/main.o build/layer.o build/criteria.o build/hotkey.o build/enums.o build/keystate.o build/update.o build/action.o build/node_ref.o
 	$(CC) $(LIBFLAG) -o $@ -Llibhotkey -lhotkey $^ -Wl,-rpath,'$$ORIGIN'
 
 build/main.o: src/main.c
@@ -38,6 +38,9 @@ build/update.o: src/update.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
 build/action.o: src/action.c
+	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
+
+build/node_ref.o: src/node_ref.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
 clean:

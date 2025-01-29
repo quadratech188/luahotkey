@@ -8,6 +8,8 @@ local G = {}
 
 ---@alias lhk.Action_type 'Press' | 'Release' | 'Autorepeat' | 'Mirror' | 'Require_down' | 'Require_up' | 'Custom'
 
+---@alias lhk.Node lhk.Layer | nil
+
 ---Start the input loop.
 ---@param input string A path to an input file, usually `/dev/input/event#`.
 ---@param output string The name of the input device to be created.
@@ -34,8 +36,8 @@ function G.layer.new()
 end
 
 ---Configure `next_layer` to be called after `self`.
----@param next_layer lhk.Layer? The layer to be linked to `self`.
-function Layer:set_next_layer(next_layer)
+---@param next lhk.Node? The node to be linked to `self`.
+function Layer:set_next(next)
 end
 
 ---Register a hotkey to a layer.

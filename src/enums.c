@@ -2,6 +2,7 @@
 
 #include <lua.h>
 #include <lauxlib.h>
+#include "libhotkey.h"
 #include "libhotkey-action.h"
 
 enum libhotkey_state state_get(lua_State* L, int index) {

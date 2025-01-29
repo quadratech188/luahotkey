@@ -3,15 +3,15 @@
 #include <stddef.h>
 
 #include <lauxlib.h>
-#include "../libhotkey/src/loop.h"
 #include "libhotkey-layer.h"
 
 #include "hotkey.h"
+#include "node_ref.h"
 
 static const char* metatable_name = "lhk.Layer";
 
 int layer_new(lua_State* L);
-int layer_set_next_layer(lua_State* L);
+int layer_set_next(lua_State* L);
 int layer_register(lua_State* L);
 int layer_gc(lua_State* L);
 
@@ -21,7 +21,7 @@ static const luaL_Reg functions[] = {
 };
 
 static const luaL_Reg methods[] = {
-	{"set_next_layer", layer_set_next_layer},
+	{"set_next", layer_set_next},
 	{"register", layer_register},
 	{"__gc", layer_gc},
 	{NULL, NULL}
@@ -43,6 +43,10 @@ struct libhotkey_layer* layer_get(lua_State* L, int index) {
 	return luaL_checkudata(L, index, metatable_name);
 }
 
+struct libhotkey_layer* layer_test(lua_State* L, int index) {
+	return luaL_testudata(L, index, metatable_name);
+}
+
 int layer_new(lua_State* L) {
 	libhotkey_layer_init(lua_newuserdata(L, libhotkey_layer_size()));
 
@@ -56,14 +60,8 @@ int layer_gc(lua_State* L) {
 	return 0;
 }
 
-int layer_set_next_layer(lua_State* L) {
-	if (lua_isnil(L, 2)) {
-		libhotkey_layer_set_next(layer_get(L, 1), libhotkey_null_ref());
-		return 0;
-	}
-
-	libhotkey_layer_set_next(layer_get(L, 1), libhotkey_layer_ref(layer_get(L, 2)));
-
+int layer_set_next(lua_State* L) {
+	libhotkey_layer_set_next(layer_get(L, 1), node_ref_get(L, 2));
 	return 0;
 }
 
