@@ -1,11 +1,10 @@
 package = "luahotkey"
 version = "dev-1"
 source = {
-   url = "*** please add URL for source tarball, zip or repository here ***"
+   url = "git+https://github.com/quadratech188/luahotkey"
 }
 description = {
-   homepage = "*** please enter a project homepage ***",
-   license = "*** please specify a license ***"
+   license = "MIT"
 }
 build = {
     type = "make",
@@ -27,6 +26,9 @@ build = {
 	install = {
 		lua = {
 			['docs.lhk_core'] = 'docs/lhk_core.lua',
+
+			['lhk'] = 'lua/lhk/init.lua',
+			['lhk.util'] = 'lua/lhk/util.lua',
 
 			['keycodes.global'] = 'lua/keycodes/global.lua',
 		}
