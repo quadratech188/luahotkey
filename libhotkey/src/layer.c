@@ -48,7 +48,7 @@ void libhotkey_layer_cleanup(struct libhotkey_layer* layer) {
 	}
 }
 
-void libhotkey_process(struct libhotkey_layer* layer, struct libhotkey_update update) {
+void libhotkey_layer_process(struct libhotkey_layer* layer, struct libhotkey_update update) {
 	struct list_item* ptr = layer->hotkeys[update.keycode];
 
 	bool matched = false;

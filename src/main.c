@@ -11,8 +11,10 @@
 #include "action.h"
 #include "criteria.h"
 #include "hotkey.h"
+#include "keynode.h"
 #include "keystate.h"
 #include "layer.h"
+#include "node_ref.h"
 #include "update.h"
 
 lua_State* lhk_L;
@@ -37,6 +39,7 @@ int luaopen_lhk_core(lua_State* L) {
 	action_open(L);
 	criteria_open(L);
 	hotkey_open(L);
+	keynode_open(L);
 	keystate_open(L);
 	layer_open(L);
 	update_open(L);
@@ -69,6 +72,6 @@ int lhk_stop(lua_State* L) {
 }
 
 int lhk_set_root(lua_State* L) {
-	libhotkey_loop_set_root(libhotkey_layer_ref(layer_get(L, 1)));
+	libhotkey_loop_set_root(node_ref_get(L, 1));
 	return 0;
 }

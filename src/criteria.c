@@ -7,6 +7,7 @@
 #include "libhotkey-criteria.h"
 
 #include "enums.h"
+#include "keynode.h"
 #include "keystate.h"
 #include "main.h"
 #include "update.h"
@@ -48,19 +49,29 @@ struct libhotkey_criteria* criteria_get(lua_State* L, int index) {
 
 int criteria_new(lua_State* L) {
 	luaL_checktype(L, 1, LUA_TTABLE);
-	lua_getfield(L, 1, "keystates");
+
+	lua_getfield(L, 1, "keynode");
 
 	struct libhotkey_criteria* criteria;
 
-	if (lua_istable(L, -1)) {
+	if (!lua_isnil(L, -1)) {
+		lua_getfield(L, 1, "keystates");
+
 		int keystates_length = luaL_len(L, -1);
+
+		lua_pop(L, 1); // keynode
+		lua_pop(L, 1); // keystates
 
 		criteria = lua_newuserdata(L, sizeof(struct libhotkey_criteria)
 				+ keystates_length * sizeof(struct libhotkey_keystate));
 
 		criteria->keystates_length = keystates_length;
 
-		lua_getfield(L, 1, "keystates"); // Put it on top again
+		lua_getfield(L, 1, "keynode");
+		criteria->keynode = keynode_get(L, -1);
+		lua_pop(L, 1);
+
+		lua_getfield(L, 1, "keystates");
 
 		for (int i = 0; i < keystates_length; i++) {
 			lua_geti(L, -1, i + 1);

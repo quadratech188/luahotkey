@@ -1,9 +1,11 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "libhotkey.h"
+#include "libhotkey-keynode.h"
 #include "libhotkey-layer.h"
+#include "libhotkey.h"
 
+#include "keynode.h"
 #include "layer.h"
 
 struct libhotkey_node_ref node_ref_get(lua_State* L, int index) {
@@ -14,7 +16,11 @@ struct libhotkey_node_ref node_ref_get(lua_State* L, int index) {
 
 	if (layer != NULL) return libhotkey_layer_ref(layer);
 
-	luaL_typeerror(L, index, "lhk.Layer or nil");
+	struct libhotkey_keynode* keynode = keynode_test(L, index);
+
+	if (keynode != NULL) return libhotkey_keynode_ref(keynode);
+
+	luaL_typeerror(L, index, "lhk.Keynode|lhk.Layer|nil");
 
 	__builtin_unreachable();
 }

@@ -3,20 +3,20 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "libhotkey-keynode.h"
+
 static libhotkey_criteria_handler criteria_handler = NULL;
 
 bool libhotkey_criteria_satisfies(struct libhotkey_criteria* criteria, struct libhotkey_update update) {
 	if (criteria->type & LIBHOTKEY_CRITERIA_TRANSITION) {
 		if (criteria->transition != update.transition) return false;
 	}
-	/*
 	if (criteria->type & LIBHOTKEY_CRITERIA_KEYSTATE) {
 		for (int i = 0; i < criteria->keystates_length; i++) {
-			if (libhotkey_keyboard_state(criteria->keystates[i].keycode) != criteria->keystates[i].state)
+			if (libhotkey_keynode_state(criteria->keynode, criteria->keystates[i].keycode) != criteria->keystates[i].state)
 				return false;
 		}
 	}
-	*/
 	if (criteria->type & LIBHOTKEY_CRITERIA_HANDLER) {
 		return criteria_handler(criteria, update);
 	}

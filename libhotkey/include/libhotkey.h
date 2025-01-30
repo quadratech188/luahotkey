@@ -23,7 +23,8 @@ struct libhotkey_update {
 
 enum libhotkey_node_type {
 	LIBHOTKEY_NODE_NULL,
-	LIBHOTKEY_NODE_LAYER
+	LIBHOTKEY_NODE_LAYER,
+	LIBHOTKEY_NODE_KEYNODE
 };
 
 struct libhotkey_node_ref {

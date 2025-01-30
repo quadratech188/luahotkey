@@ -8,7 +8,7 @@ local G = {}
 
 ---@alias lhk.Action_type 'Press' | 'Release' | 'Autorepeat' | 'Mirror' | 'Require_down' | 'Require_up' | 'Custom'
 
----@alias lhk.Node lhk.Layer | nil
+---@alias lhk.Node lhk.Layer | lhk.Keynode | nil
 
 ---Start the input loop.
 ---@param input string A path to an input file, usually `/dev/input/event#`.
@@ -21,8 +21,30 @@ function G.stop()
 end
 
 ---Set `root` to be the first layer called during the input loop.
----@param root lhk.Layer
+---@param root lhk.Node
 function G.set_root(root)
+end
+
+
+
+---@class lhk.Keynode
+local Keynode = {}
+
+G.keynode = {}
+
+---@create a new keynode.
+---@return lhk.Keynode
+function G.keynode.new()
+end
+
+---Configure `next_layer` to be called after `self`.
+---@param next lhk.Node? The node to be linked to `self`.
+function Keynode:set_next(next)
+end
+
+---Get the current state of a key
+---@param keycode integer
+function Keynode:state(keycode)
 end
 
 ---@class lhk.Layer
@@ -53,8 +75,13 @@ G.criteria = {}
 
 ---@class lhk.Criteria_table
 ---@field transition lhk.Transition? The update needs to match a given transition.
----@field keystates lhk.Keystate[]? The keyboard state needs to match these keystates.
----@field handler fun(update: lhk.Update): boolean Custom lua handler
+---@field keynode lhk.Keynode? The keynode that keystates are sourced from
+---@field keystates lhk.Keystate[]? The keyboard state needs to match these keystates. Only used when `keynode` is set
+---@field handler (fun(update: lhk.Update): boolean)? Custom lua handler
+
+---@type lhk.Criteria_table
+local h = {
+}
 
 ---Create a new Criteria.
 ---@param args lhk.Criteria_table

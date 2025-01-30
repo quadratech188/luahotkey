@@ -4,6 +4,9 @@
 
 #include <stdbool.h>
 
+#include "libhotkey-keynode.h"
+
+
 enum libhotkey_criteria_type {
 	LIBHOTKEY_CRITERIA_TRANSITION = 1,
 	LIBHOTKEY_CRITERIA_KEYSTATE = 2,
@@ -14,6 +17,7 @@ struct libhotkey_criteria {
 	enum libhotkey_criteria_type type;
 	enum libhotkey_transition transition;
 	void* extra_data;
+	struct libhotkey_keynode* keynode;
 	int keystates_length;
 	struct libhotkey_keystate keystates[];
 };
