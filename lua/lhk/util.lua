@@ -17,7 +17,7 @@ function G.keymap(from, to)
 		if from[i] ~= to[i] then
 			layer:register(from[i], lhk_core.hotkey.new {
 				actions = {
-					lhk_core.action.new(to[i], 'Mirror')
+					lhk_core.action.mirror(to[i])
 				}
 			})
 		end

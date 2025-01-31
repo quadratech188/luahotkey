@@ -109,10 +109,48 @@ local Action = {}
 
 G.action = {}
 
----Create a new Hotkey
----@param data integer | fun(update: lhk.Update): nil function if `type` is 'Custom', integer otherwise
----@param type lhk.Action_type
-function G.action.new(data, type)
+---Create a new press action
+---@param keycode integer
+---@return lhk.Action
+function G.action.press(keycode)
+end
+
+---Create a new release action
+---@param keycode integer
+---@return lhk.Action
+function G.action.release(keycode)
+end
+
+---Create a new autorepeat action
+---@param keycode integer
+---@return lhk.Action
+function G.action.autorepeat(keycode)
+end
+
+---Create a new mirror action
+---@param keycode integer
+---@return lhk.Action
+function G.action.mirror(keycode)
+end
+
+---Create a new require_up action
+---@param reference lhk.Keynode
+---@param keycode integer
+---@return lhk.Action
+function G.action.require_up(reference, keycode)
+end
+
+---Create a new require_down action
+---@param reference lhk.Keynode
+---@param keycode integer
+---@return lhk.Action
+function G.action.require_down(reference, keycode)
+end
+
+---Create a new custom action
+---@param func fun(lhk.Update)
+---@return lhk.Action
+function G.action.custom(func)
 end
 
 ---@class lhk.Keystate

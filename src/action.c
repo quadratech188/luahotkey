@@ -2,18 +2,32 @@
 #include <lauxlib.h>
 #include "libhotkey-action.h"
 
-#include "update.h"
 #include "enums.h"
+#include "keynode.h"
 #include "main.h"
+#include "update.h"
 
 static const char* metatable_name = "lhk.Action";
 
 
-int action_new(lua_State* L);
+int action_press(lua_State* L);
+int action_release(lua_State* L);
+int action_autorepeat(lua_State* L);
+int action_mirror(lua_State* L);
+int action_require_up(lua_State* L);
+int action_require_down(lua_State* L);
+int action_custom(lua_State* L);
+
 int action_gc(lua_State* L);
 
 static const luaL_Reg functions[] = {
-	{"new", action_new},
+	{"press", action_press},
+	{"release", action_release},
+	{"autorepeat", action_autorepeat},
+	{"mirror", action_mirror},
+	{"require_up", action_require_up},
+	{"require_down", action_require_down},
+	{"custom", action_custom},
 	{NULL, NULL}
 };
 
@@ -42,22 +56,58 @@ struct libhotkey_action* action_get(lua_State* L, int index) {
 	return luaL_checkudata(L, index, metatable_name);
 }
 
-int action_new(lua_State* L) {
+int action_press(lua_State* L) {
 	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
-	action->type = action_type_get(L, 2);
-
-	if (action->type == LIBHOTKEY_ACTION_CUSTOM) {
-		luaL_checktype(L, 1, LUA_TFUNCTION);
-		lua_pushvalue(L, 1);
-
-		action->extra_data = (void*)(intptr_t)luaL_ref(L, LUA_REGISTRYINDEX); // Putting an integer into a ptr field, shitty but better than mallocing
-	}
-	else {
-		action->keycode = luaL_checkinteger(L, 1);
-	}
-
+	action->type = LIBHOTKEY_ACTION_PRESS;
+	action->keycode = luaL_checkinteger(L, 1);
 	luaL_setmetatable(L, metatable_name);
+	return 1;
+}
+int action_release(lua_State* L) {
+	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
+	action->type = LIBHOTKEY_ACTION_RELEASE;
+	action->keycode = luaL_checkinteger(L, 1);
+	luaL_setmetatable(L, metatable_name);
+	return 1;
+}
+int action_autorepeat(lua_State* L) {
+	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
+	action->type = LIBHOTKEY_ACTION_AUTOREPEAT;
+	action->keycode = luaL_checkinteger(L, 1);
+	luaL_setmetatable(L, metatable_name);
+	return 1;
+}
+int action_mirror(lua_State* L) {
+	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
+	action->type = LIBHOTKEY_ACTION_MIRROR;
+	action->keycode = luaL_checkinteger(L, 1);
+	luaL_setmetatable(L, metatable_name);
+	return 1;
+}
 
+int action_require_up(lua_State* L) {
+	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
+	action->type = LIBHOTKEY_ACTION_REQUIRE_UP;
+	action->require.keynode = keynode_get(L, 1);
+	action->require.keycode = luaL_checkinteger(L, 2);
+	luaL_setmetatable(L, metatable_name);
+	return 1;
+}
+int action_require_down(lua_State* L) {
+	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
+	action->type = LIBHOTKEY_ACTION_REQUIRE_DOWN;
+	action->require.keynode = keynode_get(L, 1);
+	action->require.keycode = luaL_checkinteger(L, 2);
+	luaL_setmetatable(L, metatable_name);
+	return 1;
+}
+int action_custom(lua_State* L) {
+	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
+	luaL_checktype(L, 1, LUA_TFUNCTION);
+	action->type = LIBHOTKEY_ACTION_CUSTOM;
+	lua_pushvalue(L, 1);
+	action->extra_data = (void*)(intptr_t)luaL_ref(L, LUA_REGISTRYINDEX);
+	luaL_setmetatable(L, metatable_name);
 	return 1;
 }
 
