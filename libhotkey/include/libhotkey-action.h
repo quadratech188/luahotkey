@@ -20,6 +20,10 @@ struct libhotkey_action {
 	union {
 		short keycode;
 		void* extra_data;
+		struct {
+			short keycode;
+			struct libhotkey_keynode* keynode;
+		} require;
 	};
 };
 

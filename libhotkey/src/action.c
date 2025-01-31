@@ -1,5 +1,7 @@
 #include "action-internal.h"
 
+#include "libhotkey-keynode.h"
+
 static libhotkey_action_handler action_handler;
 
 void libhotkey_apply_action(struct libhotkey_node_ref dest, struct libhotkey_action* action, struct libhotkey_update update) {
@@ -31,14 +33,16 @@ void libhotkey_apply_action(struct libhotkey_node_ref dest, struct libhotkey_act
 			break;
 
 		case LIBHOTKEY_ACTION_REQUIRE_DOWN:
-			// if (libhotkey_keyboard_state(action->keycode) != LIBHOTKEY_STATE_DOWN)
+			if (libhotkey_keynode_state(action->require.keynode, action->require.keycode)
+					!= LIBHOTKEY_STATE_DOWN)
 				libhotkey_send(dest, (struct libhotkey_update) {
 						action->keycode,
 						LIBHOTKEY_TRANSITION_PRESS
 						});
 			break;
 		case LIBHOTKEY_ACTION_REQUIRE_UP:
-			// if (libhotkey_keyboard_state(action->keycode) != LIBHOTKEY_STATE_UP)
+			if (libhotkey_keynode_state(action->require.keynode, action->require.keycode)
+					!= LIBHOTKEY_STATE_UP)
 				libhotkey_send(dest, (struct libhotkey_update) {
 						action->keycode,
 						LIBHOTKEY_TRANSITION_RELEASE
