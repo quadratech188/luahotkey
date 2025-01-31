@@ -65,7 +65,13 @@ int hotkey_new(lua_State* L) {
 		hotkey->criteria = criteria_get(L, -1);
 	else
 	 	hotkey->criteria = NULL;
+	lua_pop(L, 1);
 
+	lua_getfield(L, 1, "passthrough");
+	if (lua_toboolean(L, -1))
+		hotkey->flags = LIBHOTKEY_HOTKEY_PASSTHROUGH;
+	else
+	 	hotkey->flags = 0;
 	lua_pop(L, 1);
 
 	luaL_setmetatable(L, metatable_name);
