@@ -6,10 +6,12 @@
 #include <lauxlib.h>
 
 #include "enums.h"
+#include "libhotkey.h"
 
 static const char* metatable_name = "lhk.Update";
 
 int update_new(lua_State* L);
+int update_index(lua_State* L);
 
 static const luaL_Reg functions[] = {
 	{"new", update_new},
@@ -17,6 +19,7 @@ static const luaL_Reg functions[] = {
 };
 
 static const luaL_Reg methods[] = {
+	{"__index", update_index},
 	{NULL, NULL}
 };
 
@@ -26,8 +29,6 @@ void update_open(lua_State* L) {
 	lua_setfield(L, -2, "update");
 
 	luaL_newmetatable(L, metatable_name);
-	lua_pushvalue(L, -1);
-	lua_setfield(L, -2, "__index");
 	luaL_setfuncs(L, methods, 0);
 	lua_pop(L, 1);
 }
@@ -50,4 +51,24 @@ int update_new(lua_State* L) {
 	luaL_setmetatable(L, metatable_name);
 
 	return 1;
+}
+
+int update_index(lua_State* L) {
+	const char* index = luaL_checkstring(L, 2);
+	if (strcmp(index, "keycode") == 0) {
+		lua_pushinteger(L, update_get(L, 1)->keycode);
+		return 1;
+	}
+	if (strcmp(index, "transition") == 0) {
+		switch(update_get(L, 1)->transition) {
+			case LIBHOTKEY_TRANSITION_PRESS:
+				lua_pushstring(L, "Press"); break;
+			case LIBHOTKEY_TRANSITION_RELEASE:
+				lua_pushstring(L, "Release"); break;
+			case LIBHOTKEY_TRANSITION_AUTOREPEAT:
+				lua_pushstring(L, "Autorepeat");
+		}
+		return 1;
+	}
+	return 0;
 }

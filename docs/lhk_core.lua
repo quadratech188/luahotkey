@@ -166,6 +166,8 @@ function G.keystate.new(keycode, state)
 end
 
 ---@class lhk.Update
+---@field keycode integer
+---@field transition lhk.Transition
 local Update = {}
 
 G.update = {}
