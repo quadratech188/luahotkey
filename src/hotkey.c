@@ -24,13 +24,13 @@ static const luaL_Reg methods[] = {
 
 void hotkey_open(lua_State* L) {
 	lua_newtable(L);
-	luaL_setfuncs(L, functions, 0);
+	luaL_register(L, NULL, functions);
 	lua_setfield(L, -2, "hotkey");
 
 	luaL_newmetatable(L, metatable_name);
 	lua_pushvalue(L, -1);
 	lua_setfield(L, -2, "__index");
-	luaL_setfuncs(L, methods, 0);
+	luaL_register(L, NULL, functions);
 	lua_pop(L, 1);
 }
 
@@ -42,7 +42,7 @@ int hotkey_new(lua_State* L) {
 	luaL_checktype(L, 1, LUA_TTABLE);
 	lua_getfield(L, 1, "actions");
 
-	int actions_length = luaL_len(L, -1);
+	int actions_length = lua_objlen(L, -1);
 
 	struct libhotkey_hotkey* hotkey = lua_newuserdata(L, sizeof(struct libhotkey_hotkey)
 			+ actions_length * sizeof(struct libhotkey_action));
@@ -53,7 +53,7 @@ int hotkey_new(lua_State* L) {
 								   // top of the stack, get it again
 
 	for (int i = 0; i < actions_length; i++) {
-		lua_geti(L, -1, i + 1);
+		lua_rawgeti(L, -1, i + 1);
 		hotkey->actions[i] = *action_get(L, -1);
 		lua_pop(L, 1);
 	}
@@ -74,7 +74,8 @@ int hotkey_new(lua_State* L) {
 	 	hotkey->flags = 0;
 	lua_pop(L, 1);
 
-	luaL_setmetatable(L, metatable_name);
+	luaL_getmetatable(L, metatable_name);
+	lua_setmetatable(L, -2);
 
 	return 1;
 }

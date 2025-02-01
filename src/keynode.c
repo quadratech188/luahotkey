@@ -23,15 +23,19 @@ static const luaL_Reg methods[] = {
 	{NULL, NULL}
 };
 
+const char* keynode_metatablename() {
+	return metatable_name;
+}
+
 void keynode_open(lua_State* L) {
 	lua_newtable(L);
-	luaL_setfuncs(L, functions, 0);
+	luaL_register(L, NULL, functions);
 	lua_setfield(L, -2, "keynode");
 
 	luaL_newmetatable(L, metatable_name);
 	lua_pushvalue(L, -1);
 	lua_setfield(L, -2, "__index");
-	luaL_setfuncs(L, methods, 0);
+	luaL_register(L, NULL, methods);
 	lua_pop(L, 1);
 }
 
@@ -39,14 +43,11 @@ struct libhotkey_keynode* keynode_get(lua_State* L, int index) {
 	return luaL_checkudata(L, index, metatable_name);
 }
 
-struct libhotkey_keynode* keynode_test(lua_State* L, int index) {
-	return luaL_testudata(L, index, metatable_name);
-}
-
 int keynode_new(lua_State* L) {
 	libhotkey_keynode_init(lua_newuserdata(L, libhotkey_keynode_size()));
 
-	luaL_setmetatable(L, metatable_name);
+	luaL_getmetatable(L, metatable_name);
+	lua_setmetatable(L, -2);
 
 	return 1;
 }

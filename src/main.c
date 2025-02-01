@@ -34,7 +34,7 @@ int luaopen_lhk_core(lua_State* L) {
 	lhk_L = L;
 
 	lua_newtable(L);
-	luaL_setfuncs(L, functions, 0);
+	luaL_register(L, NULL, functions);
 
 	action_open(L);
 	criteria_open(L);

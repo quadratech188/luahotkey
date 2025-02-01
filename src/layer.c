@@ -27,15 +27,19 @@ static const luaL_Reg methods[] = {
 	{NULL, NULL}
 };
 
+const char* layer_metatablename() {
+	return metatable_name;
+}
+
 void layer_open(lua_State* L) {
 	lua_newtable(L);
-	luaL_setfuncs(L, functions, 0);
+	luaL_register(L, NULL, functions);
 	lua_setfield(L, -2, "layer"); // lhk.layer = <table>
 
 	luaL_newmetatable(L, metatable_name);
 	lua_pushvalue(L, -1); // duplicate the metatable
 	lua_setfield(L, -2, "__index"); // mt.__index = mt
-	luaL_setfuncs(L, methods, 0);
+	luaL_register(L, NULL, methods);
 	lua_pop(L, 1); // pop metatable
 }
 
@@ -43,15 +47,11 @@ struct libhotkey_layer* layer_get(lua_State* L, int index) {
 	return luaL_checkudata(L, index, metatable_name);
 }
 
-struct libhotkey_layer* layer_test(lua_State* L, int index) {
-	return luaL_testudata(L, index, metatable_name);
-}
-
 int layer_new(lua_State* L) {
 	libhotkey_layer_init(lua_newuserdata(L, libhotkey_layer_size()));
 
-	luaL_setmetatable(L, metatable_name);
-
+	luaL_getmetatable(L, metatable_name);
+	lua_setmetatable(L, -2);
 	return 1;
 }
 

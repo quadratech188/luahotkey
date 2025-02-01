@@ -1,6 +1,7 @@
 #include "criteria.h"
 
 #include <string.h>
+#include <stdint.h>
 
 #include <lauxlib.h>
 #include <lua.h>
@@ -33,13 +34,13 @@ void criteria_open(lua_State* L) {
 	libhotkey_set_criteria_handler(handler);
 
 	lua_newtable(L);
-	luaL_setfuncs(L, functions, 0);
+	luaL_register(L, NULL, functions);
 	lua_setfield(L, -2, "criteria");
 
 	luaL_newmetatable(L, metatable_name);
 	lua_pushvalue(L, -1);
 	lua_setfield(L, -2, "__index");
-	luaL_setfuncs(L, methods, 0);
+	luaL_register(L, NULL, methods);
 	lua_pop(L, 1);
 }
 
@@ -57,7 +58,7 @@ int criteria_new(lua_State* L) {
 	if (!lua_isnil(L, -1)) {
 		lua_getfield(L, 1, "keystates");
 
-		int keystates_length = luaL_len(L, -1);
+		int keystates_length = lua_objlen(L, -1);
 
 		lua_pop(L, 1); // keynode
 		lua_pop(L, 1); // keystates
@@ -74,7 +75,7 @@ int criteria_new(lua_State* L) {
 		lua_getfield(L, 1, "keystates");
 
 		for (int i = 0; i < keystates_length; i++) {
-			lua_geti(L, -1, i + 1);
+			lua_rawgeti(L, -1, i + 1);
 			criteria->keystates[i] = *keystate_get(L, -1);
 			lua_pop(L, 1);
 		}
@@ -108,7 +109,8 @@ int criteria_new(lua_State* L) {
 		lua_pop(L, 1);
 	}
 
-	luaL_setmetatable(L, metatable_name);
+	luaL_getmetatable(L, metatable_name);
+	lua_setmetatable(L, -2);
 
 	return 1;
 }
@@ -123,7 +125,7 @@ int criteria_gc(lua_State* L) {
 }
 
 static bool handler(struct libhotkey_criteria* criteria, struct libhotkey_update update) {
-	lua_geti(lhk_L, LUA_REGISTRYINDEX, (intptr_t)criteria->extra_data);
+	lua_rawgeti(lhk_L, LUA_REGISTRYINDEX, (intptr_t)criteria->extra_data);
 	update_push(lhk_L, update);
 
 	int err = lua_pcall(lhk_L, 1, 1, 0);

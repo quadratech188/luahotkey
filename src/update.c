@@ -25,11 +25,11 @@ static const luaL_Reg methods[] = {
 
 void update_open(lua_State* L) {
 	lua_newtable(L);
-	luaL_setfuncs(L, functions, 0);
+	luaL_register(L, NULL, functions);
 	lua_setfield(L, -2, "update");
 
 	luaL_newmetatable(L, metatable_name);
-	luaL_setfuncs(L, methods, 0);
+	luaL_register(L, NULL, methods);
 	lua_pop(L, 1);
 }
 
@@ -39,7 +39,8 @@ struct libhotkey_update* update_get(lua_State* L, int index) {
 
 void update_push(lua_State* L, struct libhotkey_update update) {
 	*(struct libhotkey_update*)lua_newuserdata(L, sizeof(struct libhotkey_update)) = update;
-	luaL_setmetatable(L, metatable_name);
+	luaL_getmetatable(L, metatable_name);
+	lua_setmetatable(L, -2);
 }
 
 int update_new(lua_State* L) {
@@ -48,7 +49,8 @@ int update_new(lua_State* L) {
 	update->keycode = luaL_checkinteger(L, 1);
 	update->transition = transition_get(L, 2);
 
-	luaL_setmetatable(L, metatable_name);
+	luaL_getmetatable(L, metatable_name);
+	lua_setmetatable(L, -2);
 
 	return 1;
 }
