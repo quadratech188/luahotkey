@@ -6,6 +6,10 @@ source = {
 description = {
    license = "MIT"
 }
+supported_platforms = {'linux'}
+dependencies = {
+	'lua == 5.1'
+}
 build = {
     type = "make",
     build_variables = {
