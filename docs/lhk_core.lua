@@ -96,7 +96,7 @@ G.hotkey = {}
 
 ---@class lhk.Hotkey_table
 ---@field criteria lhk.Criteria? The hotkey is activated when the criteria is statisfied.
----@field actions lhk.Action[]? The updates to send when the hotkey is activated.
+---@field actions lhk.Action[] The updates to send when the hotkey is activated.
 ---@field passthrough boolean? Whether the original keystroke should also be sent
 
 ---Create a new Hotkey.
