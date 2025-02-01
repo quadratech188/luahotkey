@@ -6,6 +6,10 @@
 
 #include "libhotkey-keynode.h"
 
+enum indices {
+	NEXT
+};
+
 static const char* metatable_name = "lhk.Keynode";
 
 int keynode_new(lua_State* L);
@@ -49,11 +53,20 @@ int keynode_new(lua_State* L) {
 	luaL_getmetatable(L, metatable_name);
 	lua_setmetatable(L, -2);
 
+	lua_newtable(L);
+	lua_setfenv(L, -2);
+
 	return 1;
 }
 
 int keynode_set_next(lua_State* L) {
 	libhotkey_keynode_set_next(keynode_get(L, 1), node_ref_get(L, 2));
+
+	lua_getfenv(L, 1);
+	lua_pushnumber(L, NEXT);
+	lua_pushvalue(L, 2);
+	lua_settable(L, -3); // fenv[1] = next
+
 	return 0;
 }
 

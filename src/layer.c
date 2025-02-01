@@ -8,6 +8,11 @@
 #include "hotkey.h"
 #include "node_ref.h"
 
+enum indices {
+	HOTKEYS,
+	NEXT
+};
+
 static const char* metatable_name = "lhk.Layer";
 
 int layer_new(lua_State* L);
@@ -52,6 +57,13 @@ int layer_new(lua_State* L) {
 
 	luaL_getmetatable(L, metatable_name);
 	lua_setmetatable(L, -2);
+
+	lua_newtable(L);
+
+	lua_pushnumber(L, HOTKEYS);
+	lua_newtable(L);
+	lua_settable(L, -3); // fenv = {hotkeys = {}}
+	lua_setfenv(L, -2);
 	return 1;
 }
 
@@ -62,10 +74,22 @@ int layer_gc(lua_State* L) {
 
 int layer_set_next(lua_State* L) {
 	libhotkey_layer_set_next(layer_get(L, 1), node_ref_get(L, 2));
+
+	lua_getfenv(L, 1);
+
+	lua_pushnumber(L, NEXT);
+	lua_pushvalue(L, 2);
+	lua_settable(L, -3); // fenv.next = next
 	return 0;
 }
 
 int layer_register(lua_State* L) {
 	libhotkey_register_hotkey(layer_get(L, 1), luaL_checkinteger(L, 2), hotkey_get(L, 3));
+
+	lua_getfenv(L, 1);
+	lua_pushnumber(L, HOTKEYS);
+	lua_gettable(L, -2); // fenv.hotkeys
+	lua_pushvalue(L, 3);
+	lua_rawseti(L, -2, lua_objlen(L, -2) + 1); // fenv.hotkeys[#fenv.hotkeys + 1] = hotkey
 	return 0;
 }
