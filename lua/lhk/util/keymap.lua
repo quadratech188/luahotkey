@@ -1,12 +1,10 @@
 local lhk_core = require 'lhk_core'
 
-local G = {}
-
 ---Creates a keymap from `from` to `to`
 ---@param from integer[] List of keycodes
 ---@param to integer[] List of keycodes
 ---@return lhk.Layer
-function G.keymap(from, to)
+return function (from, to)
 	if #from ~= #to then
 		error('`from` and `to` have different lengths', 2)
 	end
@@ -25,5 +23,3 @@ function G.keymap(from, to)
 
 	return layer
 end
-
-return G
