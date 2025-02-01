@@ -13,9 +13,8 @@ libhotkey.so:
 build:
 	mkdir -p build
 
-lhk_core.so: build/main.o build/layer.o build/criteria.o build/hotkey.o build/enums.o build/keystate.o build/update.o build/action.o build/node_ref.o build/keynode.o
-	$(CC) $(LIBFLAG) -o $@ -Llibhotkey -lhotkey $^ -Wl,-rpath,'$$ORIGIN'
-
+lhk_core.so: build/main.o build/layer.o build/criteria.o build/hotkey.o build/enums.o build/keystate.o build/update.o build/action.o build/node_ref.o build/keynode.o build/io.o
+	$(CC) $(LIBFLAG) -o $@ -Llibhotkey -lhotkey -L$(LIBEVDEV_LIBDIR) -levdev $^ -Wl,-rpath,'$$ORIGIN' 
 build/main.o: src/main.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
@@ -45,6 +44,9 @@ build/node_ref.o: src/node_ref.c
 
 build/keynode.o: src/keynode.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
+
+build/io.o: src/linux/io.c
+	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@ -I$(LIBEVDEV_INCDIR)
 
 clean:
 	rm lhk_core.so build -rf

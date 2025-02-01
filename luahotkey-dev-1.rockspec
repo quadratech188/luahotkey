@@ -10,6 +10,12 @@ supported_platforms = {'linux'}
 dependencies = {
 	'lua == 5.1'
 }
+external_dependencies = {
+	LIBEVDEV = {
+		header = 'libevdev/libevdev.h',
+		library = 'libevdev.so'
+	}
+}
 build = {
     type = "make",
     build_variables = {
@@ -19,6 +25,8 @@ build = {
         LUA_BINDIR="$(LUA_BINDIR)",
         LUA_INCDIR="$(LUA_INCDIR)",
         LUA="$(LUA)",
+		LIBEVDEV_INCDIR = "$(LIBEVDEV_INCDIR)",
+		LIBEVDEV_LIBDIR = "$(LIBEVDEV_LIBDIR)"
 	},
   	install_variables = {
         INST_PREFIX="$(PREFIX)",

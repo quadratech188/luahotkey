@@ -1,7 +1,3 @@
-#ifdef __unix__
-
+#ifdef __linux__
 #include "linux/io.h"
-
-#else
-
 #endif

@@ -1,4 +1,4 @@
-#include "../io.h"
+#include "io.h"
 
 #include "libevdev/libevdev.h"
 #include "libevdev/libevdev-uinput.h"

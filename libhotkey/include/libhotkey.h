@@ -35,3 +35,7 @@ struct libhotkey_node_ref {
 struct libhotkey_node_ref libhotkey_null_ref();
 
 void libhotkey_send(struct libhotkey_node_ref dest, struct libhotkey_update update);
+
+typedef void (*libhotkey_output)(struct libhotkey_update update);
+
+void libhotkey_set_output(libhotkey_output output);
