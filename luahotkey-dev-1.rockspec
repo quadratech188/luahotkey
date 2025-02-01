@@ -31,6 +31,7 @@ build = {
 			['lhk.util'] = 'lua/lhk/util.lua',
 
 			['keycodes.global'] = 'lua/keycodes/global.lua',
+			['keycodes.table'] = 'lua/keycodes/table.lua',
 		}
 	}
 }
