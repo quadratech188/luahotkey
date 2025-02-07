@@ -45,6 +45,7 @@ int luaopen_lhk_core(lua_State* L) {
 }
 
 static struct libhotkey_node_ref root;
+int root_ref = LUA_NOREF;
 static bool stop;
 
 int lhk_start(lua_State* L) {
@@ -80,5 +81,11 @@ int lhk_stop(lua_State* L) {
 
 int lhk_set_root(lua_State* L) {
 	root = node_ref_get(L, 1);
+
+	luaL_unref(L, LUA_REGISTRYINDEX, root_ref); // Also works when root_ref is LUA_NOREF
+
+	lua_pushvalue(L, 1);
+	root_ref = luaL_ref(L, LUA_REGISTRYINDEX);
+	
 	return 0;
 }
