@@ -4,6 +4,7 @@
 #include "libevdev/libevdev-uinput.h"
 #include <fcntl.h>
 #include <stdbool.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "linux_utils.h"
@@ -30,6 +31,23 @@ int libhotkey_io_init(const char* input_name, const char* output_name) {
 	if (result < 0) {
 		libhotkey_io_cleanup();
 		return LIBHOTKEY_OPEN_INPUT_FAIL;
+	}
+
+	// Wait until all keys are released
+	char keys[KEY_MAX/8 + 1];
+	memset(keys, 0, sizeof(keys));
+
+	bool all_released = false;
+
+	while (!all_released) {
+		// TODO: Obviously inefficient
+		ioctl(libevdev_get_fd(input_dev), EVIOCGKEY(sizeof(keys)), keys);
+
+		all_released = true;
+		for (int i = 0; i < sizeof(keys); i++) {
+			if (keys[i] != 0) all_released = false;
+		}
+		libevdev_next_event(input_dev, LIBEVDEV_READ_FLAG_BLOCKING, &event);
 	}
 
 	result = libevdev_grab(input_dev, LIBEVDEV_GRAB);
