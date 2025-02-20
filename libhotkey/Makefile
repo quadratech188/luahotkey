@@ -5,14 +5,14 @@ LIBFLAG = -shared
 
 SOURCES = $(wildcard src/*.c)
 
-OBJECTS = $(SOURCES:src/%.c=build/src/%.o)
+OBJECTS = $(SOURCES:src/%.c=build/%.o)
 
 all: libhotkey.so
 
 libhotkey.so: $(OBJECTS)
 	$(CC) $(CFLAGS) $(LIBFLAG) -o $@ $^ -Wl,--version-script=export.map
 
-build/src/%.o: src/%.c
+build/%.o: src/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -Iinclude -c $< -o $@
 
