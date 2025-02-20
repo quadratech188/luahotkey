@@ -3,32 +3,20 @@ CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -fPIC -g
 LIBFLAG = -shared
 
-# Directories
-SRC_DIR = src
-BUILD_DIR = build
-UTILS_DIR = $(SRC_DIR)/utils
-INCLUDE_DIR = include
+SOURCES = $(wildcard src/*.c)
 
-# Source files
-COMMON_SOURCES = $(wildcard $(SRC_DIR)/*.c)
+OBJECTS = $(SOURCES:src/%.c=build/src/%.o)
 
-# Object files
-COMMON_OBJECTS = $(COMMON_SOURCES:$(SRC_DIR)/%.c=$(BUILD_DIR)/src/%.o)
+all: libhotkey.so
 
-# Target
-TARGET = libhotkey.so
-
-# Rules
-all: $(TARGET)
-
-$(TARGET): $(COMMON_OBJECTS) $(PLATFORM_OBJECTS)
+libhotkey.so: $(OBJECTS)
 	$(CC) $(CFLAGS) $(LIBFLAG) -o $@ $^ -Wl,--version-script=export.map
 
-$(BUILD_DIR)/src/%.o: $(SRC_DIR)/%.c
+build/src/%.o: src/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) -Iinclude -c $< -o $@
 
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET)
+	rm -rf build libhotkey.so
 
 .PHONY: all clean
