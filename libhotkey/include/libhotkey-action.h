@@ -12,6 +12,8 @@ enum libhotkey_action_type {
 	LIBHOTKEY_ACTION_REQUIRE_DOWN,
 	LIBHOTKEY_ACTION_REQUIRE_UP,
 
+	LIBHOTKEY_ACTION_ENFORCE,
+
 	LIBHOTKEY_ACTION_CUSTOM
 };
 
@@ -24,6 +26,10 @@ struct libhotkey_action {
 			short keycode;
 			struct libhotkey_keynode* keynode;
 		} require;
+		struct {
+			short keycode;
+			struct libhotkey_keynode* reference;
+		} enforce;
 	};
 };
 

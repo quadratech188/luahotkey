@@ -1,6 +1,7 @@
 #include "action-internal.h"
 
 #include "libhotkey-keynode.h"
+#include "libhotkey.h"
 
 static libhotkey_action_handler action_handler;
 
@@ -48,6 +49,24 @@ void libhotkey_apply_action(struct libhotkey_node_ref dest, struct libhotkey_act
 						LIBHOTKEY_TRANSITION_RELEASE
 						});
 			break;
+
+		//TODO: Only send keystrokes when it's necessary (No idea how)
+		case LIBHOTKEY_ACTION_ENFORCE:
+			if (libhotkey_keynode_state(action->enforce.reference, action->enforce.keycode)
+					== LIBHOTKEY_STATE_DOWN) {
+				libhotkey_send(dest, (struct libhotkey_update) {
+						action->enforce.keycode,
+						LIBHOTKEY_TRANSITION_PRESS
+						});
+			}
+			else {
+			 	libhotkey_send(dest, (struct libhotkey_update) {
+						action->enforce.keycode,
+						LIBHOTKEY_TRANSITION_RELEASE
+						});
+			}
+			break;
+
 		case LIBHOTKEY_ACTION_CUSTOM:
 			action_handler(action, update);
 	}

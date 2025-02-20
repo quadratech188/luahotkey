@@ -148,6 +148,13 @@ end
 function G.action.require_down(reference, keycode)
 end
 
+---Create a new enforce action
+---@param reference lhk.Keynode
+---@param keycode integer
+---@return lhk.Action
+function G.action.enforce(reference, keycode)
+end
+
 ---Create a new custom action
 ---@param func fun(lhk.Update)
 ---@return lhk.Action

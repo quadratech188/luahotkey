@@ -18,6 +18,7 @@ int action_autorepeat(lua_State* L);
 int action_mirror(lua_State* L);
 int action_require_up(lua_State* L);
 int action_require_down(lua_State* L);
+int action_enforce(lua_State* L);
 int action_custom(lua_State* L);
 
 int action_gc(lua_State* L);
@@ -29,6 +30,7 @@ static const luaL_Reg functions[] = {
 	{"mirror", action_mirror},
 	{"require_up", action_require_up},
 	{"require_down", action_require_down},
+	{"enforce", action_enforce},
 	{"custom", action_custom},
 	{NULL, NULL}
 };
@@ -105,6 +107,15 @@ int action_require_down(lua_State* L) {
 	action->type = LIBHOTKEY_ACTION_REQUIRE_DOWN;
 	action->require.keynode = keynode_get(L, 1);
 	action->require.keycode = luaL_checkinteger(L, 2);
+	luaL_getmetatable(L, metatable_name);
+	lua_setmetatable(L, -2);
+	return 1;
+}
+int action_enforce(lua_State* L) {
+	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
+	action->type = LIBHOTKEY_ACTION_ENFORCE;
+	action->enforce.reference = keynode_get(L, 1);
+	action->enforce.keycode = luaL_checkinteger(L, 2);
 	luaL_getmetatable(L, metatable_name);
 	lua_setmetatable(L, -2);
 	return 1;
