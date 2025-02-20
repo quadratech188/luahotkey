@@ -14,7 +14,7 @@ build:
 	mkdir -p build
 
 lhk_core.so: build/main.o build/layer.o build/criteria.o build/hotkey.o build/enums.o build/keystate.o build/update.o build/action.o build/node_ref.o build/keynode.o build/settings.o build/io.o
-	$(CC) $(LIBFLAG) -o $@ -Llibhotkey -lhotkey -L$(LIBEVDEV_LIBDIR) -levdev $^ -Wl,-rpath,'$$ORIGIN' 
+	$(CC) $(LIBFLAG) -o $@ -Llibhotkey -lhotkey -L$(LIBEVDEV_LIBDIR) -levdev $^ -Wl,-rpath,'$$ORIGIN',--version-script=export.map
 build/main.o: src/main.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 

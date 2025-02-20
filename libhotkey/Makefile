@@ -22,7 +22,7 @@ TARGET = libhotkey.so
 all: $(TARGET)
 
 $(TARGET): $(COMMON_OBJECTS) $(PLATFORM_OBJECTS)
-	$(CC) $(CFLAGS) $(LIBFLAG) -o $@ $^
+	$(CC) $(CFLAGS) $(LIBFLAG) -o $@ $^ -Wl,--version-script=export.map
 
 $(BUILD_DIR)/src/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)

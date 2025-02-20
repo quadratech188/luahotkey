@@ -1,0 +1,25 @@
+{
+	global:
+		libhotkey_send;
+		libhotkey_set_output;
+		libhotkey_null_ref;
+
+		libhotkey_layer_size;
+		libhotkey_layer_init;
+		libhotkey_layer_cleanup;
+		libhotkey_layer_set_next;
+		libhotkey_register_hotkey;
+		libhotkey_layer_ref;
+
+		libhotkey_keynode_size;
+		libhotkey_keynode_init;
+		libhotkey_keynode_set_next;
+		libhotkey_keynode_state;
+		libhotkey_keynode_ref;
+
+		libhotkey_set_action_handler;
+		libhotkey_set_criteria_handler;
+
+	local:
+		*;
+};
