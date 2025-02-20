@@ -12,6 +12,7 @@
 #include "keystate.h"
 #include "layer.h"
 #include "node_ref.h"
+#include "settings.h"
 #include "update.h"
 
 lua_State* lhk_L;
@@ -39,6 +40,7 @@ int luaopen_lhk_core(lua_State* L) {
 	keynode_open(L);
 	keystate_open(L);
 	layer_open(L);
+	settings_open(L);
 	update_open(L);
 
 	return 1;

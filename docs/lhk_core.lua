@@ -187,4 +187,11 @@ G.update = {}
 function G.update.new(keycode, transition)
 end
 
+G.settings = {}
+
+---Determine whether to grab the original input device.
+---@param grab boolean
+function G.settings.grab(grab)
+end
+
 return G

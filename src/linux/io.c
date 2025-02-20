@@ -1,5 +1,7 @@
 #include "io.h"
 
+#include "../settings.h"
+
 #include "libevdev/libevdev.h"
 #include "libevdev/libevdev-uinput.h"
 #include <fcntl.h>
@@ -50,11 +52,13 @@ int libhotkey_io_init(const char* input_name, const char* output_name) {
 		libevdev_next_event(input_dev, LIBEVDEV_READ_FLAG_BLOCKING, &event);
 	}
 
-	result = libevdev_grab(input_dev, LIBEVDEV_GRAB);
+	if (settings_should_grab) {
+		result = libevdev_grab(input_dev, LIBEVDEV_GRAB);
 
-	if (result < 0) {
-		libhotkey_io_cleanup();
-		return LIBHOTKEY_GRAB_INPUT_FAIL;
+		if (result < 0) {
+			libhotkey_io_cleanup();
+			return LIBHOTKEY_GRAB_INPUT_FAIL;
+		}
 	}
 
 	// output
