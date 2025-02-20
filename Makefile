@@ -5,50 +5,25 @@ CFLAGS = -fPIC -g
 
 INCLUDES = -Ilibhotkey/include -I$(LUA_INCDIR)
 
-all: build libhotkey.so lhk_core.so
+all: setup libhotkey.so lhk_core.so
+
+setup:
+	@mkdir -p build/linux
 
 libhotkey.so:
 	cd libhotkey && make all
 
-build:
-	mkdir -p build
+SOURCES = $(wildcard src/*.c)
+OBJECTS = $(SOURCES:src/%.c=build/%.o)
 
-lhk_core.so: build/main.o build/layer.o build/criteria.o build/hotkey.o build/enums.o build/keystate.o build/update.o build/action.o build/node_ref.o build/keynode.o build/settings.o build/io.o
-	$(CC) $(LIBFLAG) -o $@ -Llibhotkey -lhotkey -L$(LIBEVDEV_LIBDIR) -levdev $^ -Wl,-rpath,'$$ORIGIN',--version-script=export.map
-build/main.o: src/main.c
+lhk_core.so: $(OBJECTS) build/linux/io.o
+	$(CC) $(LIBFLAG) -o $@ -Llibhotkey -lhotkey -L$(LIBEVDEV_LIBDIR) -levdev $^ \
+		-Wl,-rpath,'$$ORIGIN',--version-script=export.map
+
+build/%.o: src/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
-build/layer.o: src/layer.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/criteria.o: src/criteria.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/hotkey.o: src/hotkey.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/enums.o: src/enums.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/keystate.o: src/keystate.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/update.o: src/update.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/action.o: src/action.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/node_ref.o: src/node_ref.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/keynode.o: src/keynode.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/settings.o: src/settings.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
-
-build/io.o: src/linux/io.c
+build/linux/io.o: src/linux/io.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@ -I$(LIBEVDEV_INCDIR)
 
 clean:
