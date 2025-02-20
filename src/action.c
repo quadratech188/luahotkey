@@ -137,6 +137,6 @@ static void action_handler(struct libhotkey_action* action, struct libhotkey_upd
 
 	// TODO: proper error handling
 	if (err != 0) {
-		fprintf(stderr, lua_tostring(lhk_L, err));
+		fprintf(stderr, "%s\n", lua_tostring(lhk_L, -1));
 	}
 }
