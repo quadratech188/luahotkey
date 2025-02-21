@@ -4,4 +4,13 @@ G.actions = require 'lhk.actions'
 
 G.util = require 'lhk.util'
 
+G.criteria.primitives = {
+	press = G.criteria.new {
+		transition = 'Press'
+	},
+	release = G.criteria.new {
+		transition = 'Release'
+	}
+}
+
 return G
