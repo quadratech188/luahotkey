@@ -169,6 +169,12 @@ end
 function G.action.enforce_from_up(reference, keycode)
 end
 
+---Create a new set_next action
+---@param from lhk.Layer|lhk.Keynode
+---@param to lhk.Layer|lhk.Keynode|nil
+function G.action.set_next(from, to)
+end
+
 ---Create a new custom action
 ---@param func fun(lhk.Update)
 ---@return lhk.Action
