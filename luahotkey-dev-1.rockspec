@@ -41,6 +41,7 @@ build = {
 
 			['lhk'] = 'lua/lhk/init.lua',
 			['lhk.actions'] = 'lua/lhk/actions.lua',
+			['lhk.switcher'] = 'lua/lhk/switcher.lua',
 
 			['lhk.util'] = 'lua/lhk/util/init.lua',
 			['lhk.util.keymap'] = 'lua/lhk/util/keymap.lua',
