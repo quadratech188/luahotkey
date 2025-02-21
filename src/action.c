@@ -7,6 +7,7 @@
 #include "enums.h"
 #include "keynode.h"
 #include "main.h"
+#include "node_ref.h"
 #include "update.h"
 
 static const char* metatable_name = "lhk.Action";
@@ -21,6 +22,7 @@ int action_require_down(lua_State* L);
 int action_enforce(lua_State* L);
 int action_enforce_from_down(lua_State* L);
 int action_enforce_from_up(lua_State* L);
+int action_set_next(lua_State* L);
 int action_custom(lua_State* L);
 
 int action_gc(lua_State* L);
@@ -35,6 +37,7 @@ static const luaL_Reg functions[] = {
 	{"enforce", action_enforce},
 	{"enforce_from_down", action_enforce_from_down},
 	{"enforce_from_up", action_enforce_from_up},
+	{"set_next", action_set_next},
 	{"custom", action_custom},
 	{NULL, NULL}
 };
@@ -142,6 +145,31 @@ int action_enforce_from_up(lua_State* L) {
 	lua_setmetatable(L, -2);
 	return 1;
 }
+int action_set_next(lua_State* L) {
+	struct libhotkey_node_ref from = node_ref_get(L, 1);
+	struct libhotkey_node_ref to = node_ref_get(L, 2);
+
+	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
+
+	switch(from.type) {
+		case LIBHOTKEY_NODE_NULL:
+			luaL_typerror(L, 1, "lhk.Keynode|lhk.Layer");
+			break;
+		case LIBHOTKEY_NODE_KEYNODE:
+			action->type = LIBHOTKEY_ACTION_KEYNODE_SET_NEXT;
+			action->keynode_set_next.keynode = from.ref;
+			action->keynode_set_next.ref = to;
+			break;
+		case LIBHOTKEY_NODE_LAYER:
+			action->type = LIBHOTKEY_ACTION_LAYER_SET_NEXT;
+			action->layer_set_next.layer = from.ref;
+			action->layer_set_next.ref = to;
+	}
+	luaL_getmetatable(L, metatable_name);
+	lua_setmetatable(L, -2);
+	return 1;
+}
+
 int action_custom(lua_State* L) {
 	struct libhotkey_action* action = lua_newuserdata(L, sizeof(struct libhotkey_action));
 	luaL_checktype(L, 1, LUA_TFUNCTION);

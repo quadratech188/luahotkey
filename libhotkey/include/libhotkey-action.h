@@ -16,6 +16,9 @@ enum libhotkey_action_type {
 	LIBHOTKEY_ACTION_ENFORCE_FROM_DOWN,
 	LIBHOTKEY_ACTION_ENFORCE_FROM_UP,
 
+	LIBHOTKEY_ACTION_LAYER_SET_NEXT,
+	LIBHOTKEY_ACTION_KEYNODE_SET_NEXT,
+
 	LIBHOTKEY_ACTION_CUSTOM
 };
 
@@ -32,6 +35,14 @@ struct libhotkey_action {
 			short keycode;
 			struct libhotkey_keynode* reference;
 		} enforce;
+		struct {
+			struct libhotkey_layer* layer;
+			struct libhotkey_node_ref ref;
+		} layer_set_next;
+		struct {
+			struct libhotkey_keynode* keynode;
+			struct libhotkey_node_ref ref;
+		} keynode_set_next;
 	};
 };
 

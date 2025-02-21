@@ -1,6 +1,7 @@
 #include "action-internal.h"
 
 #include "libhotkey-keynode.h"
+#include "libhotkey-layer.h"
 #include "libhotkey.h"
 
 static libhotkey_action_handler action_handler;
@@ -83,6 +84,13 @@ void libhotkey_apply_action(struct libhotkey_node_ref dest, struct libhotkey_act
 						LIBHOTKEY_TRANSITION_PRESS
 						});
 			}
+			break;
+
+		case LIBHOTKEY_ACTION_LAYER_SET_NEXT:
+			libhotkey_layer_set_next(action->layer_set_next.layer, action->layer_set_next.ref);
+			break;
+		case LIBHOTKEY_ACTION_KEYNODE_SET_NEXT:
+			libhotkey_keynode_set_next(action->keynode_set_next.keynode, action->keynode_set_next.ref);
 			break;
 
 		case LIBHOTKEY_ACTION_CUSTOM:
