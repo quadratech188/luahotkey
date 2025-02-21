@@ -36,8 +36,12 @@ function G.standard_hotkey(reference, modifiers, key)
 	result[#result+1] = lhk_core.action.press(key)
 	result[#result+1] = lhk_core.action.release(key)
 
-	for modifier, _ in pairs(all_modifiers) do
-		result[#result+1] = lhk_core.action.enforce(reference, modifier)
+	for modifier, used in pairs(all_modifiers) do
+		if used then
+			result[#result+1] = lhk_core.action.enforce_from_down(reference, modifier)
+		else
+			result[#result+1] = lhk_core.action.enforce_from_up(reference, modifier)
+		end
 	end
 
 	return result
