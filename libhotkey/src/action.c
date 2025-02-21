@@ -66,6 +66,24 @@ void libhotkey_apply_action(struct libhotkey_node_ref dest, struct libhotkey_act
 						});
 			}
 			break;
+		case LIBHOTKEY_ACTION_ENFORCE_FROM_DOWN:
+			if (libhotkey_keynode_state(action->enforce.reference, action->enforce.keycode)
+					== LIBHOTKEY_STATE_UP) {
+				libhotkey_send(dest, (struct libhotkey_update) {
+						action->enforce.keycode,
+						LIBHOTKEY_TRANSITION_RELEASE
+						});
+			}
+			break;
+		case LIBHOTKEY_ACTION_ENFORCE_FROM_UP:
+			if (libhotkey_keynode_state(action->enforce.reference, action->enforce.keycode)
+					== LIBHOTKEY_STATE_DOWN) {
+				libhotkey_send(dest, (struct libhotkey_update) {
+						action->enforce.keycode,
+						LIBHOTKEY_TRANSITION_PRESS
+						});
+			}
+			break;
 
 		case LIBHOTKEY_ACTION_CUSTOM:
 			action_handler(action, update);

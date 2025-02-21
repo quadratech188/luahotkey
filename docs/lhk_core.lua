@@ -155,6 +155,20 @@ end
 function G.action.enforce(reference, keycode)
 end
 
+---Create a new enforce_from_down action
+---@param reference lhk.Keynode
+---@param keycode integer
+---@return lhk.Action
+function G.action.enforce_from_down(reference, keycode)
+end
+
+---Create a new enforce_from_up action
+---@param reference lhk.Keynode
+---@param keycode integer
+---@return lhk.Action
+function G.action.enforce_from_up(reference, keycode)
+end
+
 ---Create a new custom action
 ---@param func fun(lhk.Update)
 ---@return lhk.Action
