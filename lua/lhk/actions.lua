@@ -1,4 +1,4 @@
-require 'keycodes.global'
+local k = require 'keycodes.local'
 lhk_core = require 'lhk_core'
 
 G = {}
@@ -12,14 +12,14 @@ function G.standard_hotkey(reference, modifiers, key)
 	local result = {}
 
 	local all_modifiers = {
-		[KEY_LEFTSHIFT] = false,
-		[KEY_LEFTCTRL] = false,
-		[KEY_LEFTMETA] = false,
-		[KEY_LEFTALT] = false,
-		[KEY_RIGHTALT] = false,
-		[KEY_RIGHTMETA] = false,
-		[KEY_RIGHTCTRL] = false,
-		[KEY_RIGHTSHIFT] = false
+		[k.KEY_LEFTSHIFT] = false,
+		[k.KEY_LEFTCTRL] = false,
+		[k.KEY_LEFTMETA] = false,
+		[k.KEY_LEFTALT] = false,
+		[k.KEY_RIGHTALT] = false,
+		[k.KEY_RIGHTMETA] = false,
+		[k.KEY_RIGHTCTRL] = false,
+		[k.KEY_RIGHTSHIFT] = false
 	}
 
 	for _, modifier in pairs(modifiers) do

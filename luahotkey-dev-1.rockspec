@@ -47,6 +47,7 @@ build = {
 			['lhk.util.keylogger'] = 'lua/lhk/util/keylogger.lua',
 
 			['keycodes.global'] = 'lua/keycodes/global.lua',
+			['keycodes.local'] = 'lua/keycodes/local.lua',
 			['keycodes.table'] = 'lua/keycodes/table.lua',
 		}
 	}
