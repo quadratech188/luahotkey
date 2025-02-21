@@ -1,5 +1,5 @@
 local k = require 'keycodes.local'
-lhk_core = require 'lhk_core'
+local lhk_core = require 'lhk_core'
 
 G = {}
 
