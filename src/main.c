@@ -81,20 +81,20 @@ int lhk_start(lua_State* L) {
 			}
 
 			libhotkey_send(root, libhotkey_io_get_update());
-			if (stop) {
-				libhotkey_io_cleanup();
-			}
+			if (stop) break;
 			libhotkey_io_send_update();
 		}
 	}
 	else {
 		while (libhotkey_io_await_update()) {
 			libhotkey_send(root, libhotkey_io_get_update());
-			if (stop)
-				libhotkey_io_send_update();
+			if (stop) break;
 			libhotkey_io_send_update();
 		}
 	}
+
+	libhotkey_io_cleanup();
+	socket_close();
 
 	return 0;
 }

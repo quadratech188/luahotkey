@@ -4,12 +4,16 @@
 
 #include "../settings.h"
 
-int fd;
+int fd = 0;
 
 int socket_init() {
 	fd = open(settings_socket(), O_RDONLY | O_NONBLOCK);
 	if (fd < 0) return fd;
 	return 0;
+}
+
+void socket_close() {
+	if (fd != 0) close(fd);
 }
 
 bool socket_push(lua_State* L) {
