@@ -212,12 +212,12 @@ G.settings = {}
 function G.settings.grab(grab)
 end
 
----Specify the event device lhk receives input from
+---Specify the event device lhk receives input from.
 ---@param input string
 function G.settings.input(input)
 end
 
----Specify the name of the event devie lhk outputs keystrokes from
+---Specify the name of the event device lhk outputs keystrokes from.
 ---@param output string
 function G.settings.output(output)
 end
