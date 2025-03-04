@@ -2,12 +2,12 @@
 
 #include <lauxlib.h>
 
-bool settings_should_grab = true;
+bool should_grab = true;
 
-int settings_grab(lua_State* L);
+int settings_grab_l(lua_State* L);
 
 static const luaL_Reg functions[] = {
-	{"grab", settings_grab},
+	{"grab", settings_grab_l},
 	{NULL, NULL}
 };
 
@@ -17,7 +17,11 @@ void settings_open(lua_State* L) {
 	lua_setfield(L, -2, "settings");
 }
 
-int settings_grab(lua_State* L) {
-	settings_should_grab = lua_toboolean(L, 1);
+int settings_grab_l(lua_State* L) {
+	should_grab = lua_toboolean(L, 1);
 	return 0;
+}
+
+bool settings_grab() {
+	return should_grab;
 }

@@ -52,7 +52,7 @@ int libhotkey_io_init(const char* input_name, const char* output_name) {
 		libevdev_next_event(input_dev, LIBEVDEV_READ_FLAG_BLOCKING, &event);
 	}
 
-	if (settings_should_grab) {
+	if (settings_grab()) {
 		result = libevdev_grab(input_dev, LIBEVDEV_GRAB);
 
 		if (result < 0) {
