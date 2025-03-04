@@ -13,6 +13,7 @@
 #include "layer.h"
 #include "node_ref.h"
 #include "settings.h"
+#include "socket.h"
 #include "update.h"
 
 lua_State* lhk_L;
@@ -63,14 +64,36 @@ int lhk_start(lua_State* L) {
 			return luaL_error(L, "Failed to create output %s: %s", settings_output(), strerror(errno));
 	}
 
+	error = socket_init();
+	if (error < 0) return luaL_error(L, "Failed to open socket %s: %s", settings_socket(), strerror(errno));
+
 	libhotkey_set_output(libhotkey_io_queue_update);
 	stop = false;
-	while (libhotkey_io_await_update()) {
-		libhotkey_send(root, libhotkey_io_get_update());
-		if (stop) {
-			libhotkey_io_cleanup();
+
+	if (settings_use_socket()) {
+		while (libhotkey_io_await_update()) {
+			if (socket_push(L)) {
+				settings_push_socket_handler(L);
+				lua_pushvalue(L, -2); // push the string
+				error = lua_pcall(L, 1, 0, 0);
+				if (error != 0)
+					fprintf(stderr, "%s\n", lua_tostring(L, -1));
+			}
+
+			libhotkey_send(root, libhotkey_io_get_update());
+			if (stop) {
+				libhotkey_io_cleanup();
+			}
+			libhotkey_io_send_update();
 		}
-		libhotkey_io_send_update();
+	}
+	else {
+		while (libhotkey_io_await_update()) {
+			libhotkey_send(root, libhotkey_io_get_update());
+			if (stop)
+				libhotkey_io_send_update();
+			libhotkey_io_send_update();
+		}
 	}
 
 	return 0;

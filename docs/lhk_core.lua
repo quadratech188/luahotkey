@@ -222,4 +222,19 @@ end
 function G.settings.output(output)
 end
 
+---Specify the path of the FIFO socket that lhk reads from.
+---@param socket string
+function G.settings.socket(socket)
+end
+
+---Specify whether to use sockets.
+---@param use_socket boolean
+function G.settings.use_socket(use_socket)
+end
+
+---Specify the function that is called when a message is received.
+---@param socket_handler any
+function G.settings.socket_handler(socket_handler)
+end
+
 return G
