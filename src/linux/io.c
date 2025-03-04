@@ -18,10 +18,10 @@ static struct libevdev_uinput* output_uidev = NULL;
 
 static struct input_event event;
 
-int libhotkey_io_init(const char* input_name, const char* output_name) {
+int libhotkey_io_init() {
 	// input
 	// https://www.freedesktop.org/software/libevdev/doc/latest/
-	int input_fd = open(input_name, O_RDWR);
+	int input_fd = open(settings_input(), O_RDWR);
 
 	if (input_fd < 0) {
 		libhotkey_io_cleanup();
@@ -63,7 +63,7 @@ int libhotkey_io_init(const char* input_name, const char* output_name) {
 
 	// output
 	output_dev = libevdev_new();
-	libevdev_set_name(output_dev, output_name);
+	libevdev_set_name(output_dev, settings_output());
 
 	// Enable enough events for programs to recognize us as a keyboard
 	libevdev_enable_event_type(output_dev, EV_SYN);

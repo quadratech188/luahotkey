@@ -51,16 +51,16 @@ int root_ref = LUA_NOREF;
 static bool stop;
 
 int lhk_start(lua_State* L) {
-	int error = libhotkey_io_init(luaL_checkstring(L, 1), luaL_checkstring(L, 2));
+	int error = libhotkey_io_init();
 
 	switch(error) {
 		case 0: break;
 		case LIBHOTKEY_OPEN_INPUT_FAIL:
-			return luaL_error(L, "Failed to open input %s: %s", luaL_checkstring(L, 1), strerror(errno));
+			return luaL_error(L, "Failed to open input %s: %s", settings_input(), strerror(errno));
 		case LIBHOTKEY_GRAB_INPUT_FAIL:
-			return luaL_error(L, "Failed to grab input %s: %s", luaL_checkstring(L, 1), strerror(errno));
+			return luaL_error(L, "Failed to grab input %s: %s", settings_input(), strerror(errno));
 		case LIBHOTKEY_CREATE_OUTPUT_FAIL:
-			return luaL_error(L, "Failed to create output %s: %s", luaL_checkstring(L, 2), strerror(errno));
+			return luaL_error(L, "Failed to create output %s: %s", settings_output(), strerror(errno));
 	}
 
 	libhotkey_set_output(libhotkey_io_queue_update);

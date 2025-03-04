@@ -7,7 +7,7 @@
 #define LIBHOTKEY_CREATE_OUTPUT_FAIL 3
 
 
-int libhotkey_io_init(const char* input_name, const char* output_name);
+int libhotkey_io_init();
 
 bool libhotkey_io_await_update();
 struct libhotkey_update libhotkey_io_get_update();

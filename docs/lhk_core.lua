@@ -11,9 +11,7 @@ local G = {}
 ---@alias lhk.Node lhk.Layer | lhk.Keynode | nil
 
 ---Start the input loop.
----@param input string A path to an input file, usually `/dev/input/event#`.
----@param output string The name of the input device to be created.
-function G.start(input, output)
+function G.start()
 end
 
 --- Stop the input loop.
@@ -212,6 +210,16 @@ G.settings = {}
 ---Determine whether to grab the original input device.
 ---@param grab boolean
 function G.settings.grab(grab)
+end
+
+---Specify the event device lhk receives input from
+---@param input string
+function G.settings.input(input)
+end
+
+---Specify the name of the event devie lhk outputs keystrokes from
+---@param output string
+function G.settings.output(output)
 end
 
 return G
