@@ -64,13 +64,13 @@ int lhk_start(lua_State* L) {
 			return luaL_error(L, "Failed to create output %s: %s", settings_output(), strerror(errno));
 	}
 
-	error = socket_init();
-	if (error < 0) return luaL_error(L, "Failed to open socket %s: %s", settings_socket(), strerror(errno));
-
 	libhotkey_set_output(libhotkey_io_queue_update);
 	stop = false;
 
 	if (settings_use_socket()) {
+		error = socket_init();
+		if (error < 0) return luaL_error(L, "Failed to open socket %s: %s", settings_socket(), strerror(errno));
+
 		while (libhotkey_io_await_update()) {
 			if (socket_push(L)) {
 				settings_push_socket_handler(L);
