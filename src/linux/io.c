@@ -18,20 +18,20 @@ static struct libevdev_uinput* output_uidev = NULL;
 
 static struct input_event event;
 
-int libhotkey_io_init() {
+int io_init() {
 	// input
 	// https://www.freedesktop.org/software/libevdev/doc/latest/
 	int input_fd = open(settings_input(), O_RDWR);
 
 	if (input_fd < 0) {
-		libhotkey_io_cleanup();
+		io_cleanup();
 		return LIBHOTKEY_OPEN_INPUT_FAIL;
 	}
 
 	int result = libevdev_new_from_fd(input_fd, &input_dev);
 
 	if (result < 0) {
-		libhotkey_io_cleanup();
+		io_cleanup();
 		return LIBHOTKEY_OPEN_INPUT_FAIL;
 	}
 
@@ -56,7 +56,7 @@ int libhotkey_io_init() {
 		result = libevdev_grab(input_dev, LIBEVDEV_GRAB);
 
 		if (result < 0) {
-			libhotkey_io_cleanup();
+			io_cleanup();
 			return LIBHOTKEY_GRAB_INPUT_FAIL;
 		}
 	}
@@ -80,19 +80,19 @@ int libhotkey_io_init() {
 	result = libevdev_uinput_create_from_device(output_dev, LIBEVDEV_UINPUT_OPEN_MANAGED, &output_uidev);
 
 	if (result < 0) {
-		libhotkey_io_cleanup();
+		io_cleanup();
 		return LIBHOTKEY_CREATE_OUTPUT_FAIL;
 	}
 
 	return 0;
 }
 
-bool libhotkey_io_await_update() {
+bool io_await_update() {
 	do {
 		int result = libevdev_next_event(input_dev, LIBEVDEV_READ_FLAG_BLOCKING, &event);
 
 		if (result < 0) {
-			libhotkey_io_cleanup();
+			io_cleanup();
 			return false;
 		}
 	} while (event.type != EV_KEY);
@@ -100,25 +100,25 @@ bool libhotkey_io_await_update() {
 	return true;
 }
 
-struct libhotkey_update libhotkey_io_get_update() {
+struct libhotkey_update io_get_update() {
 	return (struct libhotkey_update) {
 		.keycode = event.code,
 		.transition = event_value_to_transition(event.value)
 	};
 }
 
-void libhotkey_io_queue_update(struct libhotkey_update update) {
+void io_queue_update(struct libhotkey_update update) {
 	libevdev_uinput_write_event(output_uidev,
 			EV_KEY,
 			update.keycode,
 			transition_to_event_value(update.transition));
 }
 
-void libhotkey_io_send_update() {
+void io_sync_updates() {
 	libevdev_uinput_write_event(output_uidev, EV_SYN, SYN_REPORT, 0);
 }
 
-void libhotkey_io_cleanup() {
+void io_cleanup() {
 	libevdev_uinput_destroy(output_uidev);
 	if (input_dev) {
 		int input_fd = libevdev_get_fd(input_dev);

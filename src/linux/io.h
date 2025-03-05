@@ -7,12 +7,12 @@
 #define LIBHOTKEY_CREATE_OUTPUT_FAIL 3
 
 
-int libhotkey_io_init();
+int io_init();
 
-bool libhotkey_io_await_update();
-struct libhotkey_update libhotkey_io_get_update();
+bool io_await_update();
+struct libhotkey_update io_get_update();
 
-void libhotkey_io_queue_update(struct libhotkey_update update);
-void libhotkey_io_send_update();
+void io_queue_update(struct libhotkey_update update);
+void io_sync_updates();
 
-void libhotkey_io_cleanup();
+void io_cleanup();

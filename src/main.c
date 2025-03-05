@@ -52,7 +52,7 @@ int root_ref = LUA_NOREF;
 static bool stop;
 
 int lhk_start(lua_State* L) {
-	int error = libhotkey_io_init();
+	int error = io_init();
 
 	switch(error) {
 		case 0: break;
@@ -64,14 +64,14 @@ int lhk_start(lua_State* L) {
 			return luaL_error(L, "Failed to create output %s: %s", settings_output(), strerror(errno));
 	}
 
-	libhotkey_set_output(libhotkey_io_queue_update);
+	libhotkey_set_output(io_queue_update);
 	stop = false;
 
 	if (settings_use_socket()) {
 		error = socket_init();
 		if (error < 0) return luaL_error(L, "Failed to open socket %s: %s", settings_socket(), strerror(errno));
 
-		while (libhotkey_io_await_update()) {
+		while (io_await_update()) {
 			if (socket_push(L)) {
 				settings_push_socket_handler(L);
 				lua_pushvalue(L, -2); // push the string
@@ -80,20 +80,20 @@ int lhk_start(lua_State* L) {
 					fprintf(stderr, "%s\n", lua_tostring(L, -1));
 			}
 
-			libhotkey_send(root, libhotkey_io_get_update());
+			libhotkey_send(root, io_get_update());
 			if (stop) break;
-			libhotkey_io_send_update();
+			io_sync_updates();
 		}
 	}
 	else {
-		while (libhotkey_io_await_update()) {
-			libhotkey_send(root, libhotkey_io_get_update());
+		while (io_await_update()) {
+			libhotkey_send(root, io_get_update());
 			if (stop) break;
-			libhotkey_io_send_update();
+			io_sync_updates();
 		}
 	}
 
-	libhotkey_io_cleanup();
+	io_cleanup();
 	socket_close();
 
 	return 0;
