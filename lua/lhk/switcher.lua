@@ -81,4 +81,17 @@ function Switcher:set_next(next)
 	end
 end
 
+---@param next lhk.Switcher?
+function Switcher:extend(next)
+	if next == nil then
+		for i = 0, #self.layers - 1, 1 do
+			self.layers[i]:set_next(nil)
+		end
+		return
+	end
+	for i = 0, #self.layers - 1, 1 do
+		self.layers[i]:set_next(next.layers[i])
+	end
+end
+
 return G
