@@ -6,4 +6,6 @@ G.util = require 'lhk.util'
 
 G.switcher = require 'lhk.switcher'
 
+G.settings = require 'lhk.settings'
+
 return G
