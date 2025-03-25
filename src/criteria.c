@@ -48,26 +48,6 @@ struct libhotkey_criteria* criteria_get(lua_State* L, int index) {
 	return luaL_checkudata(L, index, metatable_name);
 }
 
-struct libhotkey_criteria* criteria_new_or_get(lua_State* L, int index) {
-	switch(lua_type(L, index)) {
-		case LUA_TUSERDATA:
-			return luaL_checkudata(L, index, metatable_name);
-		case LUA_TTABLE:
-			// Using negative indices fucks up lua_replace
-			index = index > 0? index: lua_gettop(L) + index + 1;
-
-			lua_pushvalue(L, index); // Pop table
-			criteria_new(L); // Push userdata
-			lua_replace(L, index); // Insert userdata
-			lua_pop(L, 1); // Pop original table
-			return luaL_checkudata(L, index, metatable_name);
-		default:
-			luaL_argerror(L, index, "Cannot be converted to lhk.Criteria");
-			// Keep the compiler happy
-			return NULL;
-	}
-}
-
 int criteria_new(lua_State* L) {
 	luaL_checktype(L, 1, LUA_TTABLE);
 
