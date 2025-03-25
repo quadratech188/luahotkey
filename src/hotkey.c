@@ -78,7 +78,7 @@ int hotkey_new(lua_State* L) {
 
 	lua_getfield(L, 1, "criteria");
 	if (!lua_isnil(L, -1)) {
-		hotkey->criteria = criteria_get(L, -1);
+		hotkey->criteria = criteria_new_or_get(L, -1);
 		lua_pop(L, 1);
 
 		// Store a reference to the criteria in fenv
