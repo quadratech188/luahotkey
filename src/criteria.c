@@ -20,6 +20,7 @@ enum incides {
 static const char* metatable_name = "lhk.Criteria";
 
 int criteria_new(lua_State* L);
+int criteria_add(lua_State* L);
 int criteria_gc(lua_State* L);
 
 static const luaL_Reg functions[] = {
@@ -29,6 +30,7 @@ static const luaL_Reg functions[] = {
 
 static const luaL_Reg methods[] = {
 	{"__gc", criteria_gc},
+	{"__add", criteria_add},
 	{NULL, NULL}
 };
 
@@ -103,6 +105,9 @@ int criteria_new(lua_State* L) {
 		}
 		lua_pop(L, 1); // T | criteria
 	}
+	else {
+		criteria->keystates_length = 0;
+	}
 
 	lua_getfield(L, 1, "transition"); // T | criteria | T.transition
 	if (!lua_isnil(L, -1)) {
@@ -125,6 +130,52 @@ int criteria_new(lua_State* L) {
 
 	luaL_getmetatable(L, metatable_name); // T | criteria | metatable
 	lua_setmetatable(L, -2); // T | criteria
+
+	return 1;
+}
+
+int criteria_add(lua_State* L) {
+	struct libhotkey_criteria* lhs = criteria_get(L, 1);
+	struct libhotkey_criteria* rhs = criteria_get(L, 2);
+
+	struct libhotkey_criteria* result = lua_newuserdata(L, sizeof(struct libhotkey_criteria)
+			+ (lhs->keystates_length + rhs->keystates_length) * sizeof(struct libhotkey_keystate)); // lhs | rhs | result
+	result->type = lhs->type | rhs->type;
+	
+	result->keystates_length = lhs->keystates_length + rhs->keystates_length;
+	memcpy(result->keystates, lhs->keystates,
+			lhs->keystates_length * sizeof(struct libhotkey_keystate));
+	memcpy(result->keystates + lhs->keystates_length, rhs->keystates,
+			rhs->keystates_length * sizeof(struct libhotkey_keystate));
+
+	if (lhs->type & LIBHOTKEY_CRITERIA_KEYSTATE) {
+		lua_getfenv(L, 1); // lhs | rhs | result | lhs.fenv
+		lua_setfenv(L, -2); // lhs | rhs | result
+		result->keynode = lhs->keynode;
+	}
+	else if (rhs->type & LIBHOTKEY_CRITERIA_KEYSTATE) {
+		lua_getfenv(L, 2); // lhs | rhs | result | rhs.fenv
+		lua_setfenv(L, -2); // lhs | rhs | result
+		result->keynode = rhs->keynode;
+	}
+
+	if (lhs->type & LIBHOTKEY_CRITERIA_TRANSITION)
+		result->transition = lhs->transition;
+	else if (rhs->type & LIBHOTKEY_CRITERIA_TRANSITION)
+	 	result->transition = rhs->transition;
+
+	if (lhs->type & LIBHOTKEY_CRITERIA_HANDLER) {
+		// New ref; the old one might get garbage collected
+		lua_rawgeti(L, LUA_REGISTRYINDEX, (intptr_t)lhs->extra_data); // lhs | rhs | result | lhs.extra_data
+		result->extra_data = (void*)(intptr_t)luaL_ref(L, LUA_REGISTRYINDEX); // lhs | rhs | result
+	}
+	else if (rhs->type & LIBHOTKEY_CRITERIA_HANDLER) {
+		lua_rawgeti(L, LUA_REGISTRYINDEX, (intptr_t)rhs->extra_data); // lhs | rhs | result | rhs.extra_data
+		result->extra_data = (void*)(intptr_t)luaL_ref(L, LUA_REGISTRYINDEX); // lhs | rhs | result
+	}
+
+	luaL_getmetatable(L, metatable_name); // T | result | metatable
+	lua_setmetatable(L, -2); // T | result
 
 	return 1;
 }
