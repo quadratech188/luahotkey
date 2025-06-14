@@ -13,6 +13,10 @@
 #include "main.h"
 #include "update.h"
 
+enum incides {
+	KEYNODE
+};
+
 static const char* metatable_name = "lhk.Criteria";
 
 int criteria_new(lua_State* L);
@@ -51,66 +55,76 @@ struct libhotkey_criteria* criteria_get(lua_State* L, int index) {
 int criteria_new(lua_State* L) {
 	luaL_checktype(L, 1, LUA_TTABLE);
 
-	lua_getfield(L, 1, "keynode");
+	lua_getfield(L, 1, "keystates"); // T | T.keystates
 
-	struct libhotkey_criteria* criteria;
+	bool uses_keystate = false;
+	size_t length = 0;
 
 	if (!lua_isnil(L, -1)) {
-		lua_getfield(L, 1, "keystates");
+		uses_keystate = true;
+		length = lua_objlen(L, -1);
+	}
 
-		int keystates_length = lua_objlen(L, -1);
+	lua_pop(L, 1); // T
+	
+	struct libhotkey_criteria* criteria = lua_newuserdata(L, sizeof(struct libhotkey_criteria)
+			+ length * sizeof(struct libhotkey_keystate)); // T | criteria
+	criteria->type = 0;
 
-		lua_pop(L, 1); // keynode
-		lua_pop(L, 1); // keystates
+	// fenv
+	lua_newtable(L); // T | criteria | {}
+	lua_setfenv(L, -2); // T | criteria
 
-		criteria = lua_newuserdata(L, sizeof(struct libhotkey_criteria)
-				+ keystates_length * sizeof(struct libhotkey_keystate));
+	if (uses_keystate) {
+		criteria->type |= LIBHOTKEY_CRITERIA_KEYSTATE;
+		criteria->keystates_length = length;
 
-		criteria->keystates_length = keystates_length;
-
-		lua_getfield(L, 1, "keynode");
+		lua_getfield(L, 1, "keynode"); // T | criteria | T.keynode
+		if (lua_isnil(L, -1))
+			return luaL_argerror(L, 1, "lhk.Criteria with keystates also require a keynode");
+		
 		criteria->keynode = keynode_get(L, -1);
-		lua_pop(L, 1);
 
-		lua_getfield(L, 1, "keystates");
+		// Add reference to keynode in fenv
+		lua_getfenv(L, -2); // T | criteria | T.keynode | criteria.fenv
+		
+		lua_pushnumber(L, KEYNODE); // T | criteria | T.keynode | criteria.fenv | KEYNODE
+		lua_pushvalue(L, -3); // T | criteria | T.keynode | criteria.fenv | KEYNODE | keynode
+		lua_settable(L, -3); // T | criteria | T.keynode | criteria.fenv
+		
+		lua_pop(L, 2); // T | criteria
+		
+		lua_getfield(L, 1, "keystates"); // T | criteria | T.keystates
 
-		for (int i = 0; i < keystates_length; i++) {
-			lua_rawgeti(L, -1, i + 1);
+		for (size_t i = 0; i < length; i++) {
+			lua_rawgeti(L, -1, i + 1); // T | criteria | T.keystates | T.keystates[i]
 			criteria->keystates[i] = *keystate_get(L, -1);
-			lua_pop(L, 1);
+			lua_pop(L, 1); // T | criteria | T.keystates
 		}
-		criteria->type = LIBHOTKEY_CRITERIA_KEYSTATE;
-
-		lua_pop(L, 1);
-	}
-	else {
-		criteria = lua_newuserdata(L, sizeof(struct libhotkey_criteria));
-		criteria->keystates_length = 0;
-		criteria->type = 0;
+		lua_pop(L, 1); // T | criteria
 	}
 
-	lua_getfield(L, 1, "transition");
+	lua_getfield(L, 1, "transition"); // T | criteria | T.transition
 	if (!lua_isnil(L, -1)) {
 		criteria->type |= LIBHOTKEY_CRITERIA_TRANSITION;
-
 		criteria->transition = transition_get(L, -1);
 	}
 
-	lua_pop(L, 1);
+	lua_pop(L, 1); // T | criteria
 
-	lua_getfield(L, 1, "handler");
+	lua_getfield(L, 1, "handler"); // T | criteria | T.handler
 	if (!lua_isnil(L, -1)) {
 		criteria->type |= LIBHOTKEY_CRITERIA_HANDLER;
 		luaL_checktype(L, -1, LUA_TFUNCTION);
-		criteria->extra_data = (void*)(intptr_t)luaL_ref(L, LUA_REGISTRYINDEX);
+
+		criteria->extra_data = (void*)(intptr_t)luaL_ref(L, LUA_REGISTRYINDEX); // T | criteria
 		// luaL_ref pops for us
 	}
-	else {
-		lua_pop(L, 1);
-	}
+	else
+		lua_pop(L, 1); // T | criteria
 
-	luaL_getmetatable(L, metatable_name);
-	lua_setmetatable(L, -2);
+	luaL_getmetatable(L, metatable_name); // T | criteria | metatable
+	lua_setmetatable(L, -2); // T | criteria
 
 	return 1;
 }
