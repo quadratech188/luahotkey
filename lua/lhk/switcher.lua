@@ -45,7 +45,7 @@ function G.new(modifiers)
 					actions = {
 						lhk_core.action.set_next(self.keynode, self.layers[index + weight])
 					},
-					criteria = press,
+					criteria = lhk_core.criteria.PRESS,
 					passthrough = true
 				})
 			else
@@ -53,7 +53,7 @@ function G.new(modifiers)
 					actions = {
 						lhk_core.action.set_next(self.keynode, self.layers[index - weight])
 					},
-					criteria = release,
+					criteria = lhk_core.criteria.RELEASE,
 					passthrough = true
 				})
 			end
