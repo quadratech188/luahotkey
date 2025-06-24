@@ -10,13 +10,6 @@ local G = {}
 local Switcher = {}
 Switcher.__index = Switcher
 
-local press = lhk_core.criteria.new {
-	transition = 'Press'
-}
-local release = lhk_core.criteria.new {
-	transition = 'Release'
-}
-
 ---Create a new lhk.Switcher
 ---@param modifiers integer[]
 ---@return lhk.Switcher
