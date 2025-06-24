@@ -77,10 +77,6 @@ G.criteria = {}
 ---@field keystates lhk.Keystate[]? The keyboard state needs to match these keystates. Only used when `keynode` is set
 ---@field handler (fun(update: lhk.Update): boolean)? Custom lua handler
 
----@type lhk.Criteria_table
-local h = {
-}
-
 ---Create a new Criteria.
 ---@param args lhk.Criteria_table
 ---@return lhk.Criteria
